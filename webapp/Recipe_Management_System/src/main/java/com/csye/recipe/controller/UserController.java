@@ -124,6 +124,73 @@ public class UserController {
         return new ResponseEntity<Object>(userDetails,HttpStatus.CREATED);
     }
 
+    @RequestMapping(value="/v1/user/self", method=RequestMethod.PUT,produces="application/json")
+    @ResponseBody
+    public ResponseEntity<Object> updateUser(@RequestBody User user,HttpServletRequest req,HttpServletResponse res){
+
+        //checking if user sent no data to update
+        if(user.equals(null)){
+            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+        }
+        //user not allowed to update certain attributes
+        if(user.getEmailId()!=null || user.getUserId()!=null || user.getAccountCreated()!=null ||
+            user.getAccountUpdated()!=null){
+            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+        }
+
+        //to store user credentials
+        String[] userCredentials;
+        String userName;
+        String password;
+
+        //variables to store update values from user
+        String updateFirstName, updateLastName, passwordUpdate;
+        userHeader = req.getHeader("Authorization");
+
+        //no credentials provided
+        if(userHeader.endsWith("Og==")) {
+            return new ResponseEntity<Object>("No Credentials sent",HttpStatus.BAD_REQUEST);
+        }
+        else if (userHeader!=null && userHeader.startsWith("Basic")) {
+            userCredentials = userService.getUserCredentials(userHeader);
+        }
+        else {
+            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+        }
+
+        userName = userCredentials[0];
+        password = userCredentials[1];
+
+        User existUser = userDao.findByEmailId(userName);
+        updateFirstName = user.getFirstName();
+        updateLastName = user.getLastName();
+        passwordUpdate = user.getPassword();
+        System.out.println("updateLastName: "+updateLastName);
+//        System.out.println(BCrypt.hashpw(password, BCrypt.gensalt()));
+//        System.out.println(BCrypt.checkpw(password, BCrypt.hashpw(password, BCrypt.gensalt())));
+
+        if(existUser!=null && BCrypt.checkpw(password, existUser.getPassword())){
+            if(updateFirstName!=null){
+                existUser.setFirstName(updateFirstName);
+            }
+            if(updateLastName!=null){
+                System.out.println("lastName not null");
+                existUser.setLastName(updateLastName);
+            }
+            if(passwordUpdate!=null){
+                existUser.setPassword(BCrypt.hashpw(passwordUpdate, BCrypt.gensalt()));
+            }
+            existUser.setAccountUpdated(new Date());
+            userDao.save(existUser);
+        }
+        else{
+            return new ResponseEntity<Object>(HttpStatus.UNAUTHORIZED);
+        }
+
+        return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
+
+    }
+
     
 
 }
