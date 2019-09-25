@@ -73,6 +73,57 @@ public class UserController {
 
     }
 
+
+    @RequestMapping(value = "/v1/user", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<Object> createUser(@RequestBody User user, HttpServletRequest req, HttpServletResponse res){
+
+        //if user already exist
+        User existUser = userDao.findByEmailId(user.getEmailId());
+        if(existUser!=null){
+            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+        }
+
+        //check user has sent all fields
+        if(user.getPassword()==null || user.getFirstName()==null || user.getLastName()==null ||
+            user.getEmailId()==null)
+            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+
+//        if(!userService.isValidEmail(user.getEmailId())){
+//            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+//        }
+
+        if(!EmailValidator.getInstance().isValid(user.getEmailId())){
+            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+        }
+
+        if(!userService.isValidPassword(user.getPassword())){
+            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+        }
+
+        Date d= new Date();
+
+        user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+        user.setAccountCreated(d);
+        user.setAccountUpdated(d);
+
+        UUID id = UUID.randomUUID();
+        user.setUserId(id);
+
+        userDao.save(user);
+
+        HashMap<String,String> userDetails = new HashMap<>();
+
+        userDetails.put("id",user.getUserId().toString());
+        userDetails.put("firstName",user.getFirstName());
+        userDetails.put("lastName",user.getLastName());
+        userDetails.put("emailId",user.getEmailId());
+        userDetails.put("accountCreated",user.getAccountCreated().toString());
+        userDetails.put("accountUpdated",user.getAccountUpdated().toString());
+
+        return new ResponseEntity<Object>(userDetails,HttpStatus.CREATED);
+    }
+
     
 
 }
