@@ -3,6 +3,7 @@ package com.csye.recipe.pojo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,11 +13,12 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(columnDefinition = "BINARY(16)")
+//    @GeneratedValue(generator = "uuid2")
+//    @GenericGenerator(name = "uuid2", strategy = "org.hibernate.id.UUIDGenerator")
+//    @Column(columnDefinition = "BINARY(16)")
     @JsonIgnore
     @JsonProperty(value = "userId")
+    @Type(type="org.hibernate.type.UUIDCharType")
     private UUID userId;
 
     @Column
@@ -44,9 +46,10 @@ public class User {
     public User() {
     }
 
-    public User(String emailId,String password){
+    public User(UUID userId,String emailId,String password){
         this.emailId = emailId;
         this.password = password;
+        this.userId = userId;
     }
 
     public UUID getUserId() {
