@@ -136,3 +136,111 @@ public class RecipeController {
             return new ResponseEntity<Object>("Something went wrong!! Please check your id.",HttpStatus.BAD_REQUEST);
         }
     }
+
+    @RequestMapping(value="/v1/recipe/{id}", method=RequestMethod.PUT, produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<Object> updateRecipe(@RequestBody Recipe recipe, @PathVariable("id") UUID id, HttpServletRequest req, HttpServletResponse res){
+
+        String userCredentials[];
+        String userName;
+        String userHeader;
+        userHeader = req.getHeader("Authorization");
+
+        userCredentials = userService.getUserCredentials(userHeader);
+        userName = userCredentials[0];
+        User user = userDao.findByEmailId(userName);
+        try {
+            Optional<Recipe> val = recipeService.findById(id);
+            if (val.isPresent()) {
+
+                if (user.getUserId().toString().equals(val.get().getAuthorId().toString())) {
+                    if (recipe.getCookTimeInMin() != 0) {
+                        val.get().setCookTimeInMin(recipe.getCookTimeInMin());
+                    }
+                    if (recipe.getPrepTimeInMin() != 0) {
+                        val.get().setPrepTimeInMin(recipe.getPrepTimeInMin());
+                    }
+                    if (recipe.getTitle() != null) {
+                        val.get().setTitle(recipe.getTitle());
+                    }
+                    if (recipe.getCusine() != null) {
+                        val.get().setCusine(recipe.getCusine());
+                    }
+                    if (recipe.getServings() != 0) {
+                        val.get().setServings(recipe.getServings());
+                    }
+                    if (recipe.getIngredients().size() != 0) {
+                        val.get().setIngredients(recipe.getIngredients());
+                    }
+                    if (recipe.getSteps().size() != 0) {
+                        val.get().setSteps(recipe.getSteps());
+                    }
+
+                    if (recipe.getNutritionInformation() != null) {
+                        if (recipe.getNutritionInformation().getCalories() != 0) {
+                            val.get().getNutritionInformation().setCalories(recipe.getNutritionInformation().getCalories());
+                        }
+                        if (recipe.getNutritionInformation().getSodiumInMg() != 0) {
+                            val.get().getNutritionInformation().setSodiumInMg(recipe.getNutritionInformation().getSodiumInMg());
+                        }
+                        if (recipe.getNutritionInformation().getCarbohydratesInGrams() != 0) {
+                            val.get().getNutritionInformation().setCarbohydratesInGrams(recipe.getNutritionInformation().getCarbohydratesInGrams());
+                        }
+                        if (recipe.getNutritionInformation().getCholesterolInMg() != 0) {
+                            val.get().getNutritionInformation().setCholesterolInMg(recipe.getNutritionInformation().getCholesterolInMg());
+                        }
+                        if (recipe.getNutritionInformation().getProteinInGrams() != 0) {
+                            val.get().getNutritionInformation().setProteinInGrams(recipe.getNutritionInformation().getProteinInGrams());
+                        }
+
+                    }
+
+                    val.get().setCreatedTs(new Date());
+                    val.get().setUpdatedTs(new Date());
+                    val.get().setAuthorId(user.getUserId());
+                    recipeDao.save(val.get());
+                } else {
+                    return new ResponseEntity<Object>(HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
+            }
+
+            return new ResponseEntity<Object>(val.get(), HttpStatus.OK);
+        }
+        catch (NullPointerException e){
+            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @RequestMapping(value="/v1/recipe/{id}", method=RequestMethod.DELETE, produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<Object> deleteRecipe(@PathVariable("id") UUID id, HttpServletRequest req, HttpServletResponse res){
+        String userCredentials[];
+        String userName;
+        String userHeader;
+        userHeader = req.getHeader("Authorization");
+
+        userCredentials = userService.getUserCredentials(userHeader);
+        userName = userCredentials[0];
+        User user = userDao.findByEmailId(userName);
+
+        try {
+            Optional<Recipe> val = recipeService.findById(id);
+
+            if (val.isPresent()) {
+                if (user.getUserId().toString().equals(val.get().getAuthorId().toString())) {
+                    recipeService.deleteRecipeById(id);
+                    return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
+                } else {
+                    return new ResponseEntity<Object>(HttpStatus.UNAUTHORIZED);
+                }
+            } else {
+                return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
+            }
+        }
+        catch(NullPointerException e){
+            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+        }
+    }
+}
