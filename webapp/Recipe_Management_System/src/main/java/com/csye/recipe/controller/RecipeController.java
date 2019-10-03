@@ -120,3 +120,19 @@ public class RecipeController {
 
         return new ResponseEntity<Object>(recipe,HttpStatus.CREATED);
     }
+
+    @RequestMapping(value = "/v1/recipe/{id}", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<Object> getRecipe(Recipe recipe, HttpServletRequest req, HttpServletResponse res,@PathVariable("id") UUID id){
+        try {
+            Optional<Recipe> existRecipe = recipeService.findById(id);
+            if (existRecipe.isPresent()) {
+                return new ResponseEntity<Object>(existRecipe, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
+            }
+        }
+        catch(Exception e){
+            return new ResponseEntity<Object>("Something went wrong!! Please check your id.",HttpStatus.BAD_REQUEST);
+        }
+    }
