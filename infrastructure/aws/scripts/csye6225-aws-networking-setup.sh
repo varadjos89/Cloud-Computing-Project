@@ -59,6 +59,8 @@ do
   read SUBNET_PUBLIC_CIDR3
 done
 
+
+
 SUBNET_PUBLIC_AZ="us-east-1a"
 SUBNET_PUBLIC_AZ2="us-east-1b"
 SUBNET_PUBLIC_AZ3="us-east-1c"
@@ -82,6 +84,7 @@ aws ec2 create-tags \
   --resources $VPC_ID \
   --tags "Key=Name,Value=$VPC_NAME" \
   --region $AWS_REGION
+
 
 
 # Create Public Subnet
@@ -193,7 +196,3 @@ RESULT=$(aws ec2 create-route \
   --region $AWS_REGION)
 echo "  Route to '0.0.0.0/0' via Internet Gateway ID '$IGW_ID' ADDED to" \
   "Route Table ID '$ROUTE_TABLE_ID'."
-
-
-
-
