@@ -159,5 +159,41 @@ aws ec2 attach-internet-gateway \
 echo "  Internet Gateway ID '$IGW_ID' ATTACHED to VPC ID '$VPC_ID'."
 
 
+# Create Route Table
+echo "Creating Route Table..."
+ROUTE_TABLE_ID=$(aws ec2 create-route-table \
+  --vpc-id $VPC_ID \
+  --query 'RouteTable.{RouteTableId:RouteTableId}' \
+  --output text \
+  --region $AWS_REGION)
+
+
+if echo $ROUTE_TABLE_ID | grep -qP 'rtb-[0-9a-f]{17}'
+   then echo "  Route Table ID '$ROUTE_TABLE_ID' CREATED."
+   else echo "Route table creation failed" exit 1
+fi
+
+
+aws ec2 create-tags --resources $ROUTE_TABLE_ID --tags Key=Name,Value=hey
+
+
+# Attach subnet to your Route Table
+aws ec2 associate-route-table  --subnet-id $SUBNET_PUBLIC_ID1 --route-table-id $ROUTE_TABLE_ID
+
+aws ec2 associate-route-table  --subnet-id $SUBNET_PUBLIC_ID2 --route-table-id $ROUTE_TABLE_ID
+
+aws ec2 associate-route-table  --subnet-id $SUBNET_PUBLIC_ID3 --route-table-id $ROUTE_TABLE_ID
+
+
+# Create route to Internet Gateway
+RESULT=$(aws ec2 create-route \
+  --route-table-id $ROUTE_TABLE_ID \
+  --destination-cidr-block 0.0.0.0/0 \
+  --gateway-id $IGW_ID \
+  --region $AWS_REGION)
+echo "  Route to '0.0.0.0/0' via Internet Gateway ID '$IGW_ID' ADDED to" \
+  "Route Table ID '$ROUTE_TABLE_ID'."
+
+
 
 
