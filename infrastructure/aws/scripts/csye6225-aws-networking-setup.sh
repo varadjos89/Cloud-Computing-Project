@@ -84,3 +84,57 @@ aws ec2 create-tags \
   --region $AWS_REGION
 
 
+# Create Public Subnet
+echo "Creating Public Subnet..."
+SUBNET_PUBLIC_ID1=$(aws ec2 create-subnet \
+  --vpc-id $VPC_ID \
+  --cidr-block $SUBNET_PUBLIC_CIDR \
+  --availability-zone $SUBNET_PUBLIC_AZ \
+  --query 'Subnet.{SubnetId:SubnetId}' \
+  --output text \
+  --region $AWS_REGION)
+
+
+if echo $SUBNET_PUBLIC_ID1 | grep -qP 'subnet-[0-9a-f]{17}'
+   then echo "  Subnet ID '$SUBNET_PUBLIC_ID1' CREATED in '$SUBNET_PUBLIC_AZ'" \
+  "Availability Zone."
+   else echo "1st Subnet creation failed" exit 1
+fi
+
+
+# Create Public Subnet
+echo "Creating Public Subnet..."
+SUBNET_PUBLIC_ID2=$(aws ec2 create-subnet \
+  --vpc-id $VPC_ID \
+  --cidr-block $SUBNET_PUBLIC_CIDR2 \
+  --availability-zone $SUBNET_PUBLIC_AZ2 \
+  --query 'Subnet.{SubnetId:SubnetId}' \
+  --output text \
+  --region $AWS_REGION)
+
+
+if echo $SUBNET_PUBLIC_ID2 | grep -qP 'subnet-[0-9a-f]{17}'
+   then echo "  Subnet ID '$SUBNET_PUBLIC_ID2' CREATED in '$SUBNET_PUBLIC_AZ2'" \
+  "Availability Zone."
+   else echo "2nd Subnet creation failed" exit 1
+fi
+
+
+# Create Public Subnet
+echo "Creating Public Subnet..."
+SUBNET_PUBLIC_ID3=$(aws ec2 create-subnet \
+  --vpc-id $VPC_ID \
+  --cidr-block $SUBNET_PUBLIC_CIDR3 \
+  --availability-zone $SUBNET_PUBLIC_AZ3 \
+  --query 'Subnet.{SubnetId:SubnetId}' \
+  --output text \
+  --region $AWS_REGION)
+
+
+if echo $SUBNET_PUBLIC_ID3 | grep -qP 'subnet-[0-9a-f]{17}'
+   then echo "  Subnet ID '$SUBNET_PUBLIC_ID3' CREATED in '$SUBNET_PUBLIC_AZ3'" \
+  "Availability Zone."
+   else echo "3rd Subnet creation failed" exit 1
+fi
+
+
