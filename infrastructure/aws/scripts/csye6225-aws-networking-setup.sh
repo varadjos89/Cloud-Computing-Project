@@ -58,3 +58,29 @@ do
   echo "Enter cidr for 3rd subnet"
   read SUBNET_PUBLIC_CIDR3
 done
+
+SUBNET_PUBLIC_AZ="us-east-1a"
+SUBNET_PUBLIC_AZ2="us-east-1b"
+SUBNET_PUBLIC_AZ3="us-east-1c"
+
+
+echo "Creating VPC in preferred region..."
+VPC_ID=$(aws ec2 create-vpc \
+  --cidr-block $VPC_CIDR \
+  --query 'Vpc.{VpcId:VpcId}' \
+  --output text \
+  --region $AWS_REGION)
+
+if echo $VPC_ID | grep -qP 'vpc-[0-9a-f]{17}'
+   then echo "VPC ID '$VPC_ID' CREATED in '$AWS_REGION' region."
+   else echo "VPC creation failed" exit 1
+fi
+
+
+# Add Name tag to VPC
+aws ec2 create-tags \
+  --resources $VPC_ID \
+  --tags "Key=Name,Value=$VPC_NAME" \
+  --region $AWS_REGION
+
+
