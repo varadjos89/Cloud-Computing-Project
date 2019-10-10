@@ -138,3 +138,26 @@ if echo $SUBNET_PUBLIC_ID3 | grep -qP 'subnet-[0-9a-f]{17}'
 fi
 
 
+# Create Internet gateway
+echo "Creating Internet Gateway..."
+IGW_ID=$(aws ec2 create-internet-gateway \
+  --query 'InternetGateway.{InternetGatewayId:InternetGatewayId}' \
+  --output text \
+  --region $AWS_REGION)
+
+
+if echo $IGW_ID | grep -qP 'igw-[0-9a-f]{17}'
+   then echo "  Internet Gateway ID '$IGW_ID' CREATED."
+   else echo "Internet Gateway creation failed" exit 1
+fi
+
+# Attach Internet gateway to your VPC
+aws ec2 attach-internet-gateway \
+  --vpc-id $VPC_ID \
+  --internet-gateway-id $IGW_ID \
+  --region $AWS_REGION
+echo "  Internet Gateway ID '$IGW_ID' ATTACHED to VPC ID '$VPC_ID'."
+
+
+
+
