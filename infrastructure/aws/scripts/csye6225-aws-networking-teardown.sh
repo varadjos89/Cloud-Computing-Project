@@ -35,7 +35,7 @@
         echo Route table name is "$Rname"
     } && {
         Rid=$(aws ec2 describe-route-tables --filters "Name=tag:Name,Values=$Rname" --query 'RouteTables[*].{id:RouteTableId}' | jq -r '.[] | .id') &&
-        
+
         echo Route table id is "$Rid"
     } || {
         echo "Route table not found. Exiting Script."
@@ -60,3 +60,45 @@
             echo "Unable to delete the Route table. Exiting Script."
             exit 1
     }
+
+
+
+
+
+    #Getting IG
+    {
+            Igid=$(aws ec2 describe-internet-gateways --filters "Name=attachment.vpc-id,Values=$vpcid" --query 'InternetGateways[*].{id:InternetGatewayId}' | jq -r '.[] | .id') &&
+            echo Internet gateway ID is "$Igid"
+    } || {
+            echo "Internet gateway not found. Exiting the script."
+            exit 1
+    }
+
+    #Dettaching IG
+    {
+            aws ec2 detach-internet-gateway --internet-gateway-id $Igid --vpc-id $vpcid &&
+            echo "*Detached Internet-Gateway with VPC*"
+    } || {
+            echo "Error detaching the Internet Gateway. Exiting script."
+            exit 1
+    }
+    #DEleting IG
+    {
+            aws ec2 delete-internet-gateway --internet-gateway-id $Igid &&
+            echo "*Deleted Internet Gateway*"
+    } || {
+            echo "Error deleting Gateway. Exiting the script."
+            exit 1
+    }
+
+
+        #Deleting VPCs
+        {
+                aws ec2 delete-vpc --vpc-id $vpcid &&
+                echo "*Deleted VPC*"
+        } || {
+                echo "Error deleting VPC. Exiting Script."
+                exit 1
+        }
+
+        echo "*Done!*"
