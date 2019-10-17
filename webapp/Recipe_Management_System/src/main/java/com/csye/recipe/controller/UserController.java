@@ -3,6 +3,8 @@ package com.csye.recipe.controller;
 import com.csye.recipe.pojo.User;
 import com.csye.recipe.repository.UserRepository;
 import com.csye.recipe.service.UserService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.json.JSONObject;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,23 +35,28 @@ public class UserController {
 
     @RequestMapping(value = "/v1/user/self", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public ResponseEntity<Object> userHome(HttpServletRequest req, HttpServletResponse res) {
+    public ResponseEntity<Object> userHome(HttpServletRequest req, HttpServletResponse res) throws JsonProcessingException {
 
         String[] userCredentials;
         String userName;
         String password;
+        JSONObject jo;
+        String error;
         try {
             userHeader = req.getHeader("Authorization");
 
             //user sending no userName and password
             if(userHeader.endsWith("Og==")) {
-                return new ResponseEntity<Object>("No Credentials sent",HttpStatus.BAD_REQUEST);
+                error = "{\"error\": \"No Credentials sent\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
             }
             else if (userHeader!=null && userHeader.startsWith("Basic")) {
                 userCredentials = userService.getUserCredentials(userHeader);
             } else {
-                return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
-
+                error = "{\"error\": \"No Credentials sent\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
             }
 
             userName = userCredentials[0];
@@ -68,12 +75,16 @@ public class UserController {
 
             }
             else{
-                return new ResponseEntity<Object>(HttpStatus.UNAUTHORIZED);
+                error = "{\"error\": \"User unauthorized\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
             }
             return new ResponseEntity<Object>(userDetails, HttpStatus.OK);
         }
         catch(Exception e){
-            return new ResponseEntity<Object>("Please give Basic auth as authorization!!",HttpStatus.UNAUTHORIZED);
+            error = "{\"error\": \"Please provide authorization as basic auth\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -82,27 +93,37 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<Object> createUser(@RequestBody User user, HttpServletRequest req, HttpServletResponse res){
 
+        JSONObject jo;
+        String error;
         //if user already exist
         User existUser = userDao.findByEmailId(user.getEmailId());
         if(existUser!=null){
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+            error = "{\"error\": \"User already exists\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
         }
 
         //check user has sent all fields
         if(user.getPassword()==null || user.getFirstName()==null || user.getLastName()==null ||
-            user.getEmailId()==null)
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
-
+            user.getEmailId()==null) {
+            error = "{\"error\": \"FirstName or LastName or EmailId or Password cannot be null\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
+        }
 //        if(!userService.isValidEmail(user.getEmailId())){
 //            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
 //        }
 
         if(!EmailValidator.getInstance().isValid(user.getEmailId())){
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+            error = "{\"error\": \"Please enter valid EmailId\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
         }
 
         if(!userService.isValidPassword(user.getPassword())){
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+            error = "{\"error\": \"FirstName or LastName or EmailId or Password cannot be null\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
         }
 
         Date d= new Date();
@@ -132,14 +153,20 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<Object> updateUser(@RequestBody User user,HttpServletRequest req,HttpServletResponse res){
 
+        JSONObject jo;
+        String error;
         //checking if user sent no data to update
         if(user.equals(null)){
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+            error = "{\"error\": \"Unable to find the user\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
         }
         //user not allowed to update certain attributes
         if(user.getEmailId()!=null || user.getUserId()!=null || user.getAccountCreated()!=null ||
             user.getAccountUpdated()!=null){
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+            error = "{\"error\": \"EmailId or UserId or AccountCreated or AccountUpdated cannot be updated\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
         }
 
         //to store user credentials
@@ -154,13 +181,17 @@ public class UserController {
 
             //no credentials provided
             if(userHeader.endsWith("Og==")) {
-                return new ResponseEntity<Object>("No Credentials sent",HttpStatus.BAD_REQUEST);
+                error = "{\"error\": \"No Credentials sent\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
             }
             else if (userHeader!=null && userHeader.startsWith("Basic")) {
                 userCredentials = userService.getUserCredentials(userHeader);
             }
             else {
-                return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+                error = "{\"error\": \"No Credentials sent\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
             }
 
             userName = userCredentials[0];
@@ -170,7 +201,7 @@ public class UserController {
             updateFirstName = user.getFirstName();
             updateLastName = user.getLastName();
             passwordUpdate = user.getPassword();
-            System.out.println("updateLastName: "+updateLastName);
+            //System.out.println("updateLastName: "+updateLastName);
     //        System.out.println(BCrypt.hashpw(password, BCrypt.gensalt()));
     //        System.out.println(BCrypt.checkpw(password, BCrypt.hashpw(password, BCrypt.gensalt())));
 
@@ -189,13 +220,17 @@ public class UserController {
                 userDao.save(existUser);
             }
             else{
-                return new ResponseEntity<Object>(HttpStatus.UNAUTHORIZED);
+                error = "{\"error\": \"Incorrect password\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(), HttpStatus.UNAUTHORIZED);
             }
 
             return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
         }
         catch(Exception e){
-            return new ResponseEntity<Object>("Please give Basic auth as authorization!!",HttpStatus.UNAUTHORIZED);
+            error = "{\"error\": \"Please provide authorization as basic auth\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
         }
     }
 }
