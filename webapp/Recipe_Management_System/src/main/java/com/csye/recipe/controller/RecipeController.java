@@ -7,6 +7,7 @@ import com.csye.recipe.repository.RecipeRepository;
 import com.csye.recipe.repository.UserRepository;
 import com.csye.recipe.service.RecipeService;
 import com.csye.recipe.service.UserService;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,57 +45,85 @@ public class RecipeController {
         String userName;
         String password;
         String userHeader;
+        JSONObject jo;
+        String error;
 
         if(recipe.getCookTimeInMin()%5!=0 || recipe.getPrepTimeInMin()%5!=0){
-            return new ResponseEntity<Object>("Cook time and Prep time should be multiple of 5",HttpStatus.BAD_REQUEST);
+            error = "{\"error\": \"Cook time and Prep time should be multiple of 5\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
         }
 
         if(recipe.getCookTimeInMin()==0 || recipe.getPrepTimeInMin()==0){
-            return new ResponseEntity<Object>("Cook time and prep time cannot be zero",HttpStatus.BAD_REQUEST);
+            error = "{\"error\": \"Cook time and Prep time cannot be zero\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
         }
 
         //System.out.println(recipe.getServings());
         if(recipe.getServings()>5 || recipe.getServings()<1){
             //System.out.println(recipe.getServings());
-            return new ResponseEntity<Object>("Recipe serving should be between 1 and 5",HttpStatus.BAD_REQUEST);
+            error = "{\"error\": \"Recipe serving should be between 1 and 5\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
         }
 
         if(recipe.getTitle()==null || recipe.getTitle().equals("")){
-            return new ResponseEntity<Object>("Title cannot be null or blank",HttpStatus.BAD_REQUEST);
+            error = "{\"error\": \"Title cannot be null or blank\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
         }
 
         if(recipe.getCusine()==null || recipe.getCusine().equals("")){
-            return new ResponseEntity<Object>("Cuisine cannot be null or blank",HttpStatus.BAD_REQUEST);
+            error = "{\"error\": \"Cuisine cannot be null or blank\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
         }
 
         if(recipe.getIngredients().size()==0){
-            return new ResponseEntity<Object>("No ingredients provided",HttpStatus.BAD_REQUEST);
+            error = "{\"error\": \"No ingredients provided\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
         }
 
         if(recipe.getNutritionInformation()!=null){
             if(recipe.getNutritionInformation().getCalories()==0){
-                return new ResponseEntity<Object>("Calories cannot be zero",HttpStatus.BAD_REQUEST);
+                error = "{\"error\": \"Calories cannot be zero\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
             }
             if(recipe.getNutritionInformation().getCarbohydratesInGrams()==0){
-                return new ResponseEntity<Object>("Carbs cannot be zero",HttpStatus.BAD_REQUEST);
+                error = "{\"error\": \"Carbs cannot be zero\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
             }
             if(recipe.getNutritionInformation().getCholesterolInMg()==0){
-                return new ResponseEntity<Object>("Cholesterol cannot be zero",HttpStatus.BAD_REQUEST);
+                error = "{\"error\": \"Cholesterol cannot be zero\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
             }
             if(recipe.getNutritionInformation().getProteinInGrams()==0){
-                return new ResponseEntity<Object>("Proteins cannot be zero",HttpStatus.BAD_REQUEST);
+                error = "{\"error\": \"Proteins cannot be zero\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
             }
             if(recipe.getNutritionInformation().getSodiumInMg()==0){
-                return new ResponseEntity<Object>("Sodium cannot be zero",HttpStatus.BAD_REQUEST);
+                error = "{\"error\": \"Sodium cannot be zero\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
             }
         }else{
-            return new ResponseEntity<Object>("Nutrition information cannot be blank!!",HttpStatus.BAD_REQUEST);
+            error = "{\"error\": \"Nutrition information cannot be blank!!\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
         }
 
         //for(Steps s:recipe.getSteps()){
             if(recipe.getSteps().size()==0){
             //if(s.getPosition()<1){
-                return new ResponseEntity<Object>("Atleast one step required",HttpStatus.BAD_REQUEST);
+                error = "{\"error\": \"Atleast one step required\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
             }
         //}
         try {
@@ -104,7 +133,9 @@ public class RecipeController {
                 userCredentials = userService.getUserCredentials(userHeader);
             }
             else{
-                return new ResponseEntity<Object>("Please give Basic auth as authorization!!",HttpStatus.UNAUTHORIZED);
+                error = "{\"error\": \"Please give Basic auth as authorization!!\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
             }
 
             userName = userCredentials[0];
@@ -124,17 +155,24 @@ public class RecipeController {
                 return new ResponseEntity<Object>(recipe,HttpStatus.CREATED);
             }
             else {
-                return new ResponseEntity<Object>("User unauthorized to update this recipe!!",HttpStatus.UNAUTHORIZED);
+                error = "{\"error\": \"User unauthorized to update this recipe!!\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
             }
         }
         catch (Exception e){
-            return new ResponseEntity<Object>("Please provide basic auth as authorization!!",HttpStatus.UNAUTHORIZED);
+            error = "{\"error\": \"Please provide basic auth as authorization!!\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
         }
     }
 
     @RequestMapping(value = "/v1/recipe/{id}", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public ResponseEntity<Object> getRecipe(Recipe recipe, HttpServletRequest req, HttpServletResponse res,@PathVariable("id") UUID id){
+
+        JSONObject jo;
+        String error;
         try {
             Optional<Recipe> existRecipe = recipeService.findById(id);
             if (existRecipe.isPresent()) {
@@ -144,7 +182,9 @@ public class RecipeController {
             }
         }
         catch(Exception e){
-            return new ResponseEntity<Object>("Something went wrong!! Please check your id.",HttpStatus.BAD_REQUEST);
+            error = "{\"error\": \"Something went wrong!! Please check your id.\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -156,6 +196,8 @@ public class RecipeController {
         String userName;
         String password;
         String userHeader;
+        JSONObject jo;
+        String error;
         try {
             userHeader = req.getHeader("Authorization");
 
@@ -214,20 +256,28 @@ public class RecipeController {
                         val.get().setAuthorId(user.getUserId());
                         recipeDao.save(val.get());
                     } else {
-                        return new ResponseEntity<Object>("User unauthorized to update this recipe!!",HttpStatus.UNAUTHORIZED);
+                        error = "{\"error\": \"User unauthorized to update this recipe!!\"}";
+                        jo = new JSONObject(error);
+                        return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
                     }
                 } else {
-                    return new ResponseEntity<Object>("Recipe not found!!",HttpStatus.NOT_FOUND);
+                    error = "{\"error\": \"Recipe not found!!\"}";
+                    jo = new JSONObject(error);
+                    return new ResponseEntity<Object>(jo.toString(),HttpStatus.NOT_FOUND);
                 }
 
                 return new ResponseEntity<Object>(val.get(), HttpStatus.OK);
             }else {
-                return new ResponseEntity<Object>("User unauthorized to update this recipe!!",HttpStatus.UNAUTHORIZED);
+                error = "{\"error\": \"User unauthorized to update this recipe!!\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
             }
 
         }
         catch (Exception e){
-            return new ResponseEntity<Object>("Please provide basic auth as authorization!!",HttpStatus.UNAUTHORIZED);
+            error = "{\"error\": \"User unauthorized to update this recipe!!\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -238,6 +288,8 @@ public class RecipeController {
         String userName;
         String password;
         String userHeader;
+        JSONObject jo;
+        String error;
         try {
             userHeader = req.getHeader("Authorization");
 
@@ -255,18 +307,26 @@ public class RecipeController {
                         recipeService.deleteRecipeById(id);
                         return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
                     } else {
-                        return new ResponseEntity<Object>("User Unauthorized to delete this recipe!!",HttpStatus.UNAUTHORIZED);
+                        error = "{\"error\": \"User Unauthorized to delete this recipe!!\"}";
+                        jo = new JSONObject(error);
+                        return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
                     }
                 } else {
-                    return new ResponseEntity<Object>("Recipe not found!!",HttpStatus.NOT_FOUND);
+                    error = "{\"error\": \"Recipe not found!!\"}";
+                    jo = new JSONObject(error);
+                    return new ResponseEntity<Object>(jo.toString(),HttpStatus.NOT_FOUND);
                 }
             }
             else {
-                return new ResponseEntity<Object>("User unauthorized to delete this recipe!!",HttpStatus.UNAUTHORIZED);
+                error = "{\"error\": \"User unauthorized to delete this recipe!!\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
             }
         }
         catch(Exception e){
-            return new ResponseEntity<Object>("Please provide Basic auth as authorization!!",HttpStatus.UNAUTHORIZED);
+            error = "{\"error\": \"Please provide Basic auth as authorization!!\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
         }
     }
 }

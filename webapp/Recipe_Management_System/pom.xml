@@ -12,6 +12,7 @@
     <artifactId>demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Recipe_Management_System</name>
+    <packaging>war</packaging>
     <description>Cloud Project</description>
 
     <properties>
@@ -56,6 +57,15 @@
             <artifactId>commons-validator</artifactId>
             <version>1.4.0</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.json/json -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20190722</version>
+        </dependency>
+
+
 
     </dependencies>
 
