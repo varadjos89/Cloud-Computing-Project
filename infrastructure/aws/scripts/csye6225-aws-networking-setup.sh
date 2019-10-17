@@ -61,11 +61,6 @@ done
 
 
 
-SUBNET_PUBLIC_AZ="us-east-1a"
-SUBNET_PUBLIC_AZ2="us-east-1b"
-SUBNET_PUBLIC_AZ3="us-east-1c"
-
-
 echo "Creating VPC in preferred region..."
 VPC_ID=$(aws ec2 create-vpc \
   --cidr-block $VPC_CIDR \
@@ -85,6 +80,9 @@ aws ec2 create-tags \
   --tags "Key=Name,Value=$VPC_NAME" \
   --region $AWS_REGION
 
+SUBNET_PUBLIC_AZ="$AWS_REGION"a
+SUBNET_PUBLIC_AZ2="$AWS_REGION"b
+SUBNET_PUBLIC_AZ3="$AWS_REGION"c
 
 
 # Create Public Subnet
