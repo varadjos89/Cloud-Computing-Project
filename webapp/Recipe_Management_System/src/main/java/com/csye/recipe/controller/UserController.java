@@ -38,39 +38,43 @@ public class UserController {
         String[] userCredentials;
         String userName;
         String password;
-        userHeader = req.getHeader("Authorization");
+        try {
+            userHeader = req.getHeader("Authorization");
 
-        //user sending no userName and password
-        if(userHeader.endsWith("Og==")) {
-            return new ResponseEntity<Object>("No Credentials sent",HttpStatus.BAD_REQUEST);
+            //user sending no userName and password
+            if(userHeader.endsWith("Og==")) {
+                return new ResponseEntity<Object>("No Credentials sent",HttpStatus.BAD_REQUEST);
+            }
+            else if (userHeader!=null && userHeader.startsWith("Basic")) {
+                userCredentials = userService.getUserCredentials(userHeader);
+            } else {
+                return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
+
+            }
+
+            userName = userCredentials[0];
+            password = userCredentials[1];
+
+            User existUser = userDao.findByEmailId(userName);
+            HashMap<String,String> userDetails = new HashMap<>();
+
+            if(existUser!=null && BCrypt.checkpw(password, existUser.getPassword())){
+                userDetails.put("id",existUser.getUserId().toString());
+                userDetails.put("firstName",existUser.getFirstName());
+                userDetails.put("lastName",existUser.getLastName());
+                userDetails.put("emailId",existUser.getEmailId());
+                userDetails.put("accountCreated",existUser.getAccountCreated().toString());
+                userDetails.put("accountUpdated",existUser.getAccountUpdated().toString());
+
+            }
+            else{
+                return new ResponseEntity<Object>(HttpStatus.UNAUTHORIZED);
+            }
+            return new ResponseEntity<Object>(userDetails, HttpStatus.OK);
         }
-        else if (userHeader!=null && userHeader.startsWith("Basic")) {
-            userCredentials = userService.getUserCredentials(userHeader);
-        } else {
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
-
+        catch(Exception e){
+            return new ResponseEntity<Object>("Please give Basic auth as authorization!!",HttpStatus.UNAUTHORIZED);
         }
-
-        userName = userCredentials[0];
-        password = userCredentials[1];
-
-        User existUser = userDao.findByEmailId(userName);
-        HashMap<String,String> userDetails = new HashMap<>();
-
-        if(existUser!=null && BCrypt.checkpw(password, existUser.getPassword())){
-            userDetails.put("id",existUser.getUserId().toString());
-            userDetails.put("firstName",existUser.getFirstName());
-            userDetails.put("lastName",existUser.getLastName());
-            userDetails.put("emailId",existUser.getEmailId());
-            userDetails.put("accountCreated",existUser.getAccountCreated().toString());
-            userDetails.put("accountUpdated",existUser.getAccountUpdated().toString());
-
-        }
-        else{
-            return new ResponseEntity<Object>(HttpStatus.UNAUTHORIZED);
-        }
-        return new ResponseEntity<Object>(userDetails, HttpStatus.OK);
-
     }
 
 
@@ -143,54 +147,55 @@ public class UserController {
         String userName;
         String password;
 
-        //variables to store update values from user
-        String updateFirstName, updateLastName, passwordUpdate;
-        userHeader = req.getHeader("Authorization");
+        try {
+            //variables to store update values from user
+            String updateFirstName, updateLastName, passwordUpdate;
+            userHeader = req.getHeader("Authorization");
 
-        //no credentials provided
-        if(userHeader.endsWith("Og==")) {
-            return new ResponseEntity<Object>("No Credentials sent",HttpStatus.BAD_REQUEST);
-        }
-        else if (userHeader!=null && userHeader.startsWith("Basic")) {
-            userCredentials = userService.getUserCredentials(userHeader);
-        }
-        else {
-            return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
-        }
-
-        userName = userCredentials[0];
-        password = userCredentials[1];
-
-        User existUser = userDao.findByEmailId(userName);
-        updateFirstName = user.getFirstName();
-        updateLastName = user.getLastName();
-        passwordUpdate = user.getPassword();
-        System.out.println("updateLastName: "+updateLastName);
-//        System.out.println(BCrypt.hashpw(password, BCrypt.gensalt()));
-//        System.out.println(BCrypt.checkpw(password, BCrypt.hashpw(password, BCrypt.gensalt())));
-
-        if(existUser!=null && BCrypt.checkpw(password, existUser.getPassword())){
-            if(updateFirstName!=null){
-                existUser.setFirstName(updateFirstName);
+            //no credentials provided
+            if(userHeader.endsWith("Og==")) {
+                return new ResponseEntity<Object>("No Credentials sent",HttpStatus.BAD_REQUEST);
             }
-            if(updateLastName!=null){
-                System.out.println("lastName not null");
-                existUser.setLastName(updateLastName);
+            else if (userHeader!=null && userHeader.startsWith("Basic")) {
+                userCredentials = userService.getUserCredentials(userHeader);
             }
-            if(passwordUpdate!=null){
-                existUser.setPassword(BCrypt.hashpw(passwordUpdate, BCrypt.gensalt()));
+            else {
+                return new ResponseEntity<Object>(HttpStatus.BAD_REQUEST);
             }
-            existUser.setAccountUpdated(new Date());
-            userDao.save(existUser);
-        }
-        else{
-            return new ResponseEntity<Object>(HttpStatus.UNAUTHORIZED);
-        }
 
-        return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
+            userName = userCredentials[0];
+            password = userCredentials[1];
 
+            User existUser = userDao.findByEmailId(userName);
+            updateFirstName = user.getFirstName();
+            updateLastName = user.getLastName();
+            passwordUpdate = user.getPassword();
+            System.out.println("updateLastName: "+updateLastName);
+    //        System.out.println(BCrypt.hashpw(password, BCrypt.gensalt()));
+    //        System.out.println(BCrypt.checkpw(password, BCrypt.hashpw(password, BCrypt.gensalt())));
+
+            if(existUser!=null && BCrypt.checkpw(password, existUser.getPassword())){
+                if(updateFirstName!=null){
+                    existUser.setFirstName(updateFirstName);
+                }
+                if(updateLastName!=null){
+                    System.out.println("lastName not null");
+                    existUser.setLastName(updateLastName);
+                }
+                if(passwordUpdate!=null){
+                    existUser.setPassword(BCrypt.hashpw(passwordUpdate, BCrypt.gensalt()));
+                }
+                existUser.setAccountUpdated(new Date());
+                userDao.save(existUser);
+            }
+            else{
+                return new ResponseEntity<Object>(HttpStatus.UNAUTHORIZED);
+            }
+
+            return new ResponseEntity<Object>(HttpStatus.NO_CONTENT);
+        }
+        catch(Exception e){
+            return new ResponseEntity<Object>("Please give Basic auth as authorization!!",HttpStatus.UNAUTHORIZED);
+        }
     }
-
-    
-
 }
