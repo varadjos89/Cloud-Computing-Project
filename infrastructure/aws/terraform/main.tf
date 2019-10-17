@@ -1,4 +1,4 @@
-data "aws_availability_zones" "available" {}
+#data "aws_availability_zones" "available" {}
 
 resource "aws_vpc" "main" {
   cidr_block = "${var.cidrVpc}"
@@ -9,9 +9,8 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_subnet" "main" {
-  count = 3
-
-  availability_zone = "${data.aws_availability_zones.available.names[count.index]}"
+  count = "${var.subnetCount}"
+  availability_zone = "${var.subnetZones[count.index]}"
   cidr_block        = "${var.subnetCidrBlock[count.index]}"  
   vpc_id            = "${aws_vpc.main.id}"
 
@@ -44,6 +43,6 @@ resource "aws_route_table" "main" {
 resource "aws_route_table_association" "main" {
   count = 3
 
-  subnet_id      = "${aws_subnet.main.*.id[count.index]}"
-  route_table_id = "${aws_route_table.main.id}"
+ subnet_id      = "${aws_subnet.main.*.id[count.index]}"
+ route_table_id = "${aws_route_table.main.id}"
 }

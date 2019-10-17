@@ -7,27 +7,31 @@
 
 	"VPCName":{
 		"Type":"String",
-		"Default":"myVPC"
+        "Default":"myVPC"
 	},
 
 	"vpcCIDR":{
-		"Type":"String",
-		"Default":"10.0.0.0/16"
+        "Type":"String",
+        "Default":"10.0.0.0/16",
+        "AllowedPattern":"^([0-9]{1,3}\\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$"
 	},
 
 	"subnet1CIDR":{
-		"Type":"String",
-		"Default":"10.0.0.0/24"
+        "Type":"String",
+        "Default":"10.0.0.0/24",
+        "AllowedPattern":"^([0-9]{1,3}\\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$"
 	},
 
 	"subnet2CIDR":{
 		"Type":"String",
-		"Default":"10.0.1.0/24"
+        "Default":"10.0.1.0/24",
+        "AllowedPattern":"^([0-9]{1,3}\\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$"
 	},
 
 	"subnet3CIDR":{
 		"Type":"String",
-		"Default":"10.0.2.0/24"
+        "Default":"10.0.2.0/24",
+        "AllowedPattern":"^([0-9]{1,3}\\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$"
 	}
 
     },
