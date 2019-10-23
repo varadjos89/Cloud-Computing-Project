@@ -10,6 +10,7 @@ import java.util.UUID;
 @Repository
 public interface ImageRepository extends CrudRepository<Image, UUID> {
 
-    Image findByimageId(UUID imageId);
+    //Image findByImageId(UUID imageId);
+    //Optional<Image> findById(UUID id);
 
 }

@@ -4,8 +4,10 @@ import com.csye.recipe.pojo.Image;
 import com.csye.recipe.pojo.Recipe;
 import com.csye.recipe.pojo.User;
 import com.csye.recipe.repository.ImageRepository;
+import com.csye.recipe.repository.RecipeRepository;
 import com.csye.recipe.repository.UserRepository;
 import com.csye.recipe.service.AmazonClient;
+import com.csye.recipe.service.ImageService;
 import com.csye.recipe.service.RecipeService;
 import com.csye.recipe.service.UserService;
 import org.json.JSONObject;
@@ -38,10 +40,16 @@ public class ImageController {
     private RecipeService recipeService;
 
     @Autowired
+    private ImageService imageService;
+
+    @Autowired
     private UserRepository userDao;
 
     @Autowired
     private ImageRepository imageRepository;
+
+    @Autowired
+    private RecipeRepository recipeRepository;
 
     public ImageController(AmazonClient amazonClient) {
         this.amazonClient = amazonClient;
@@ -99,10 +107,11 @@ public class ImageController {
                         return new ResponseEntity<Object>(jo.toString(), HttpStatus.UNAUTHORIZED);
                     }
                     //check if recipe already has an image
-                    if(amazonClient.checkIfImageAlreadyExist(existRecipe.get())){
+                    if(imageService.checkIfImageAlreadyExist(existRecipe.get())){
                         Image img = new Image();
                         //creating new image and storing in S3 bucket
                         String s3Url = this.amazonClient.uploadFile(file);
+
                         UUID imageId = UUID.randomUUID();
                         img.setImageId(imageId);
                         img.setImageURL(s3Url);
@@ -110,6 +119,9 @@ public class ImageController {
                         imageRepository.save(img);
                         //setting recipe object
                         existRecipe.get().setImage(img);
+                        recipeRepository.save(existRecipe.get());
+                        System.out.println(existRecipe.get().getImage());
+
                         return new ResponseEntity<Object>(img, HttpStatus.CREATED);
                     }
                     else{
@@ -146,10 +158,10 @@ public class ImageController {
         String error;
         try {
             Optional<Recipe> existRecipe = recipeService.findById(recipeId);
-            Image image = imageRepository.findByimageId(imageId);
             if (existRecipe.isPresent()) {
-                if(image!=null){
-                    return new ResponseEntity<Object>(image, HttpStatus.OK);
+                Optional<Image> image = imageService.findByImageId(imageId);
+                if(image.get()!=null){
+                    return new ResponseEntity<Object>(image.get(), HttpStatus.OK);
                 }
                 else{
                     error = "{\"error\": \"ImageId not found\"}";

@@ -9,6 +9,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.csye.recipe.pojo.Image;
 import com.csye.recipe.pojo.Recipe;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AmazonClient {
@@ -75,18 +78,10 @@ public class AmazonClient {
             String fileName = generateFileName(multipartFile);
             fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
             uploadFileTos3bucket(fileName, file);
-            //System.out.println("MetaData "+s3client.getObjectMetadata(bucketName,file.toString()));
             file.delete();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return fileUrl;
-    }
-
-    public boolean checkIfImageAlreadyExist(Recipe recipe){
-        if(recipe.getImage()!=null){
-            return false;
-        }
-        return true;
     }
 }

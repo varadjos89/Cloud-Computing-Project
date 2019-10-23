@@ -13,7 +13,7 @@ public class Image {
 
     @Id
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-    @JsonProperty(value = "id")
+    @JsonProperty(value = "imageId")
     @Type(type = "org.hibernate.type.UUIDCharType")
     private UUID imageId;
 
