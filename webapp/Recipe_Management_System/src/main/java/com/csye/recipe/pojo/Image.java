@@ -20,8 +20,7 @@ public class Image {
     @Column
     private String imageURL;
 
-//    @OneToOne(mappedBy = "image", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    private Recipe recipe;
+    public Image(){}
 
     public String getImageURL() {
         return imageURL;
