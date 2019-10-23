@@ -12,3 +12,9 @@ module "module1" {
    subnetZones = "${var.subnetZones}"
    profile = "${var.profile}"
 }
+
+# module "appl" {
+#   source = "../../application/module1"
+  
+
+# }

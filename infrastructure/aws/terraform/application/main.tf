@@ -79,4 +79,64 @@ resource "aws_db_instance" "my_rds" {
   password              = "${var.db_password}"
   db_subnet_group_name  = "${aws_db_subnet_group.rds-subnet.name}"
   publicly_accessible   = "${var.db_publicly_accessible}"
+  skip_final_snapshot   = "${var.db_skip_final_snapshot}"
+}
+
+resource "aws_s3_bucket" "my_s3_bucket" {
+  bucket                = "${var.s3_bucket}"
+  acl                   = "${var.s3_acl}"  
+  force_destroy         = "${var.s3_force_destroy}"
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm     = "aws:kms"
+      }
+    }
+  }
+
+  tags = {
+    Name        = "${var.s3_bucket_name}"
+  }
+
+  lifecycle_rule {
+    id                    = "${var.s3_lifecycle_id}"
+    enabled               = "${var.s3_lifecycle_enabled}"
+    # prefix                = "${var.s3_lifecycle_prefix}"
+
+    transition {
+      days                = "${var.s3_lifecycle_transition_days}"
+      storage_class       = "${var.s3_lifecycle_transition_storage_class}"
+    }
+  }
+}
+
+resource "aws_instance" "ec2_instance" {
+  ami                       = "${var.ami}"
+  instance_type             = "${var.instance_type}"
+  disable_api_termination   = "${var.disable_api_termination}"
+  availability_zone         = "${var.subnetZones[2]}"
+
+  ebs_block_device {
+    device_name               = "${var.device_name}"
+    volume_size               = "${var.volume_size}"
+    volume_type               = "${var.volume_type}"
+    delete_on_termination     = "${var.delete_on_termination}"
+  }
+
+  tags = {
+    Name = "MyEC2"
+  }
+}
+
+resource "aws_dynamodb_table" "dynamoDB_Table" {
+  name                        = "${var.dynamoDB_name}"
+  hash_key                    = "${var.dynamoDB_hashKey}"
+  write_capacity              = "${var.dynamoDB_writeCapacity}"
+  read_capacity               = "${var.dynamoDB_readCapacity}"
+
+  attribute {
+    name = "${var.dynamoDB_hashKey}"
+    type = "S"
+  }
 }

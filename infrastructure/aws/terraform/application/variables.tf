@@ -48,11 +48,11 @@ variable "db_publicly_accessible" {
 }
 
 variable "rds_subnet1" {
-    default = "subnet-043c8689da63a7483"
+    default = "subnet-03312b8765858aaa6"
 }
 
 variable "rds_subnet2" {
-    default = "subnet-06a0d439f34fded46"
+    default = "subnet-06927732034bd16df"
 }
 
 variable "vpc_id" {
@@ -61,4 +61,97 @@ variable "vpc_id" {
 
 variable "subnetCidrBlock" {
     type = "list"
+}
+
+variable "db_skip_final_snapshot" {
+    type = "string"
+}
+
+variable "s3_bucket" {
+    type = "string"
+}
+
+variable "s3_acl" {
+    type = "string"
+}
+
+variable "s3_force_destroy" {
+    type = "string"
+}
+
+variable "s3_lifecycle_id" {
+    type = "string"  
+    #s3_lifecycle_id  
+}
+
+variable "s3_lifecycle_enabled" {
+    type = "string"
+    #true
+}
+
+# variable "s3_lifecycle_prefix" {
+#     type = "string" 
+#     #log/     
+# }
+
+variable "s3_lifecycle_transition_days" {
+    type = "string"
+    #30
+}
+
+variable "s3_lifecycle_transition_storage_class" {
+    type = "string"
+    #STANDARD_IA
+}
+
+variable "s3_bucket_name" {
+    type = "string"
+}
+
+variable "ami" {
+    type = "string"
+}
+
+variable "instance_type" {
+    type = "string"
+}
+
+variable "disable_api_termination" {
+    type = "string"
+}
+
+variable "volume_size" {
+    type = "string"
+}
+
+variable "volume_type" {
+    type = "string"
+}
+
+variable "delete_on_termination" {
+    type = "string"
+}
+
+variable "device_name" {
+    type = "string"
+}
+
+variable "subnetZones" {
+    type = "list"
+}
+
+variable "dynamoDB_name" {
+    type = "string"
+}
+
+variable "dynamoDB_hashKey" {
+    type = "string"
+}
+
+variable "dynamoDB_writeCapacity" {
+    type = "string"
+}
+
+variable "dynamoDB_readCapacity" {
+    type = "string"
 }
