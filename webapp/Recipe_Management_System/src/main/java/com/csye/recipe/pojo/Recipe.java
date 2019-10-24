@@ -12,6 +12,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import static javax.persistence.CascadeType.MERGE;
+import static javax.persistence.CascadeType.PERSIST;
+
 @Entity
 public class Recipe {
 
@@ -74,6 +77,18 @@ public class Recipe {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="nutritionId")
     private NutritionInformation nutritionInformation;
+
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Image image;
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
 
     public Recipe() {
     }
