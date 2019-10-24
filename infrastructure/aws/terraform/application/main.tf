@@ -33,6 +33,33 @@ resource "aws_security_group" "application" {
     cidr_blocks     = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port       = 32768
+    to_port         = 65535
+    protocol        = "${var.aws_security_group_protocol}"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port       = 80
+    to_port         = 80   
+    protocol        = "${var.aws_security_group_protocol}"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port       = 443 
+    to_port         = 443  
+    protocol        = "${var.aws_security_group_protocol}"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port       = 32768
+    to_port         = 65535
+    protocol        = "${var.aws_security_group_protocol}"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_security_group" "database" {
@@ -59,7 +86,8 @@ resource "aws_db_subnet_group" "rds-subnet" {
   # count             = "${var.subnetCount}"
   name              = "${var.rds_subnet_group_name}"
   # subnet_ids        = "${element(data.aws_subnet_ids.private.ids, 1)}"
-  subnet_ids        =  ["${var.rds_subnet1}","${var.rds_subnet2}"]
+  subnet_ids        =  ["${element(tolist(data.aws_subnet_ids.subnet.ids), 0)}","${element(tolist(data.aws_subnet_ids.subnet.ids), 1)}"]
+  # subnet_ids          = ["${var.rds_subnet1}","${var.rds_subnet2}"]
   #rds_subnet_id1 and rds_subnet_id2 not yet defined
 }
 
@@ -86,6 +114,7 @@ resource "aws_db_instance" "my_rds" {
   password              = "${var.db_password}"
   db_subnet_group_name  = "${aws_db_subnet_group.rds-subnet.name}"
   publicly_accessible   = "${var.db_publicly_accessible}"
+  vpc_security_group_ids= ["${aws_security_group.database.id}"]  
   skip_final_snapshot   = "${var.db_skip_final_snapshot}"
 }
 
@@ -118,11 +147,20 @@ resource "aws_s3_bucket" "my_s3_bucket" {
   }
 }
 
+data "aws_availability_zones" "available" {
+    state = "available" 
+}
+
+data "aws_subnet_ids" "subnet" {
+    vpc_id = "${var.vpc_id}"
+}
+
+
 resource "aws_instance" "ec2_instance" {
   ami                       = "${var.ami}"
   instance_type             = "${var.instance_type}"
   disable_api_termination   = "${var.disable_api_termination}"
-  availability_zone         = "${var.subnetZones[2]}"
+  availability_zone         = "${data.aws_availability_zones.available.names[1]}"
 
   ebs_block_device {
     device_name               = "${var.device_name}"
@@ -134,6 +172,12 @@ resource "aws_instance" "ec2_instance" {
   tags = {
     Name = "${var.ec2_name}"
   }
+
+  vpc_security_group_ids      = ["${aws_security_group.application.id}"]
+  associate_public_ip_address = true
+  source_dest_check           = false
+  subnet_id                   = "${element(tolist(data.aws_subnet_ids.subnet.ids), 0)}"
+  depends_on                  = ["aws_db_instance.my_rds"]
 }
 
 resource "aws_dynamodb_table" "dynamoDB_Table" {
