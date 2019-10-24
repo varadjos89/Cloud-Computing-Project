@@ -1,5 +1,7 @@
 package com.csye.recipe.controller;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.S3Object;
 import com.csye.recipe.pojo.Image;
 import com.csye.recipe.pojo.Recipe;
 import com.csye.recipe.pojo.User;
@@ -113,9 +115,18 @@ public class ImageController {
                         //creating new image and storing in S3 bucket
                         String s3Url = this.amazonClient.uploadFile(file);
 
+                        S3Object file1 =amazonClient.getFile(s3Url);
+
                         UUID imageId = UUID.randomUUID();
                         img.setImageId(imageId);
                         img.setImageURL(s3Url);
+
+
+                        img.setBucketname(file1.getBucketName());
+                        img.setContentLength(file1.getObjectMetadata().getContentLength());
+                        img.setInstanceLength(file1.getObjectMetadata().getInstanceLength());
+                        img.setEtag(file1.getObjectMetadata().getETag());
+                        img.setImagekey(file1.getKey());
                         //saving to local db
                         imageRepository.save(img);
                         //setting recipe object
@@ -224,12 +235,24 @@ public class ImageController {
                     Image image= imageRepository.findByimageId(imageId);
                     if(image!=null)
                     {
-                        String fileUrl= image.getImageURL();
-                        imageService.deleteImageById(image.getImageId());
-                        this.amazonClient.deleteFileFromS3Bucket(fileUrl);
-                        error = "{\"Msg\": \"Image Deleted Successfully\"}";
-                        jo = new JSONObject(error);
-                        return new ResponseEntity<Object>(jo.toString(),HttpStatus.NO_CONTENT);
+                        if(existRecipe.get().getImage().getImageId().toString().equals(image.getImageId().toString())) {
+                            String fileUrl = image.getImageURL();
+
+                            imageService.deleteImageById(image.getImageId());
+                            this.amazonClient.deleteFileFromS3Bucket(fileUrl);
+                            System.out.println("doneeeeeeeeeeeeeee");
+                            System.out.println(image.getImageId());
+                            System.out.println(fileUrl);
+                            error = "{\"Msg\": \"Image Deleted Successfully\"}";
+                            jo = new JSONObject(error);
+                            return new ResponseEntity<Object>(jo.toString(), HttpStatus.OK);
+                        }
+                        else{
+                            error = "{\"error\": \"Image doesn't match with recipe\"}";
+                            jo = new JSONObject(error);
+                            return new ResponseEntity<Object>(jo.toString(), HttpStatus.OK);
+
+                        }
                     }
                     else{
                         error = "{\"error\": \"Image for recipe doesn't exist\"}";
