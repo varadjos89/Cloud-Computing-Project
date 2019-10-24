@@ -24,10 +24,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 public class ImageController {
@@ -67,6 +64,8 @@ public class ImageController {
         String userHeader;
         JSONObject jo;
         String error;
+        String imgURL;
+        String imgId;
 
         //check if user uploaded an image file only
         try (InputStream input = file.getInputStream()) {
@@ -132,9 +131,11 @@ public class ImageController {
                         //setting recipe object
                         existRecipe.get().setImage(img);
                         recipeRepository.save(existRecipe.get());
-                        System.out.println(existRecipe.get().getImage());
 
-                        return new ResponseEntity<Object>(img, HttpStatus.CREATED);
+                        HashMap<String,String> imageDetails = new HashMap<>();
+                        imageDetails.put("Image ID",img.getImageId().toString());
+                        imageDetails.put("Image URL",img.getImageURL());
+                        return new ResponseEntity<Object>(imageDetails, HttpStatus.CREATED);
                     }
                     else{
                         error = "{\"error\": \"Image for Recipe already exists\"}";
@@ -173,7 +174,10 @@ public class ImageController {
             if (existRecipe.isPresent()) {
                 Optional<Image> image = imageService.findByImageId(imageId);
                 if(image.get()!=null){
-                    return new ResponseEntity<Object>(image.get(), HttpStatus.OK);
+                    HashMap<String,String> imageDetails = new HashMap<>();
+                    imageDetails.put("Image ID",image.get().getImageId().toString());
+                    imageDetails.put("Image URL",image.get().getImageURL());
+                    return new ResponseEntity<Object>(imageDetails, HttpStatus.OK);
                 }
                 else{
                     error = "{\"error\": \"ImageId not found\"}";
