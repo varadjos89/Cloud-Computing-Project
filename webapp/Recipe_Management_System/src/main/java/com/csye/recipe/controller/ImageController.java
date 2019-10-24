@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -255,6 +256,15 @@ public class ImageController {
             jo = new JSONObject(error);
             return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
         }
+    }
+
+    @RequestMapping(value = "/v1/recipes", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<Object> recentRecipe(HttpServletRequest req, HttpServletResponse res) {
+
+        List<Recipe> r_list= recipeRepository.findByOrderByCreatedTs();
+        Recipe r= r_list.get(r_list.size()-1);
+        return new ResponseEntity<Object>(r, HttpStatus.CREATED);
     }
 
 }
