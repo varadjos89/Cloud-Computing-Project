@@ -178,7 +178,9 @@ public class RecipeController {
             if (existRecipe.isPresent()) {
                 return new ResponseEntity<Object>(existRecipe, HttpStatus.OK);
             } else {
-                return new ResponseEntity<Object>(HttpStatus.NOT_FOUND);
+                error = "{\"error\": \"RecipeId not found\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(),HttpStatus.NOT_FOUND);
             }
         }
         catch(Exception e){
