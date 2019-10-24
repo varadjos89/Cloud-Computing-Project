@@ -1,5 +1,5 @@
 module "module2" {
-   source = "../"
+   source = "../../"
 
    cidrVpc = "${var.cidrVpc}"
    vpcName = "${var.vpcName}"
