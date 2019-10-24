@@ -184,10 +184,77 @@ public class ImageController {
 
     @RequestMapping(value = "/v1/recipe/{recipeId}/image/{imageId}", method = RequestMethod.DELETE, produces = "application/json")
     @ResponseBody
-    public ResponseEntity<Object> deleteImage(HttpServletRequest req, HttpServletResponse res) {
-        //return this.amazonClient.deleteFileFromS3Bucket(fileUrl);
+    public ResponseEntity<Object> deleteImage(HttpServletRequest req, HttpServletResponse res,
+                                              @PathVariable("recipeId") UUID recipeId,@PathVariable("imageId") UUID imageId) {
 
-        return new ResponseEntity<Object>(HttpStatus.OK);
+        String[] userCredentials;
+        String userName;
+        String password;
+        String userHeader;
+        JSONObject jo;
+        String error;
+        try {
+            userHeader = req.getHeader("Authorization");
+
+            if (userHeader != null && userHeader.startsWith("Basic")) {
+                userCredentials = userService.getUserCredentials(userHeader);
+            } else {
+                error = "{\"error\": \"Please give Basic auth as authorization!!\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(), HttpStatus.UNAUTHORIZED);
+            }
+
+            userName = userCredentials[0];
+            password = userCredentials[1];
+
+            User existUser = userDao.findByEmailId(userName);
+            if (existUser != null && BCrypt.checkpw(password, existUser.getPassword())) {
+                //check if recipe exists for the id given
+                Optional<Recipe> existRecipe = recipeService.findById(recipeId);
+                if (existRecipe.isPresent()) {
+                    //checking if userId matches author Id in recipe
+                    if(!(existUser.getUserId().toString().equals(existRecipe.get().getAuthorId().toString()))){
+                        error = "{\"error\": \"User unauthorized to delete image to this recipe!!\"}";
+                        jo = new JSONObject(error);
+                        return new ResponseEntity<Object>(jo.toString(), HttpStatus.UNAUTHORIZED);
+                    }
+
+                    //check if recipe already has an image
+                    Image image= imageRepository.findByimageId(imageId);
+                    if(image!=null)
+                    {
+                        String fileUrl= image.getImageURL();
+                        imageService.deleteImageById(image.getImageId());
+                        this.amazonClient.deleteFileFromS3Bucket(fileUrl);
+                        error = "{\"Msg\": \"Image Deleted Successfully\"}";
+                        jo = new JSONObject(error);
+                        return new ResponseEntity<Object>(jo.toString(),HttpStatus.NO_CONTENT);
+                    }
+                    else{
+                        error = "{\"error\": \"Image for recipe doesn't exist\"}";
+                        jo = new JSONObject(error);
+                        return new ResponseEntity<Object>(jo.toString(), HttpStatus.OK);
+                    }
+
+                } else {
+                    error = "{\"error\": \"RecipeId not found\"}";
+                    jo = new JSONObject(error);
+                    return new ResponseEntity<Object>(jo.toString(), HttpStatus.NOT_FOUND);
+                }
+                //return new ResponseEntity<Object>(recipe,HttpStatus.CREATED);
+            } else {
+                error = "{\"error\": \"User unauthorized to add image to this recipe!!\"}";
+                jo = new JSONObject(error);
+                return new ResponseEntity<Object>(jo.toString(), HttpStatus.UNAUTHORIZED);
+            }
+        }
+        catch (Exception e){
+            System.out.println("TWO");
+            System.out.println(e);
+            error = "{\"error\": \"Please provide basic auth as authorization!!\"}";
+            jo = new JSONObject(error);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
+        }
     }
 
 }
