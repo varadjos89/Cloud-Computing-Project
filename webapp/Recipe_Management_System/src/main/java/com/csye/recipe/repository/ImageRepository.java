@@ -12,5 +12,6 @@ public interface ImageRepository extends CrudRepository<Image, UUID> {
 
     //Image findByImageId(UUID imageId);
     //Optional<Image> findById(UUID id);
+    Image findByimageId(UUID imageId);
 
 }
