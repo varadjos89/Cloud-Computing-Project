@@ -32,6 +32,15 @@ variable "db_engine_version" {
     #to be found and hardcoded
 }
 
+variable "db_storage_type" {
+    type = "string"
+}
+
+variable "db_allocated_storage" {
+    type = "string"
+}
+
+
 variable "aws_security_group_protocol" {
     type = "string"
     #tcp
@@ -47,12 +56,19 @@ variable "db_publicly_accessible" {
     #true
 }
 
+variable "rds_subnet_group_name" {
+    type = "string"
+}
+
+
 variable "rds_subnet1" {
-    default = "subnet-03312b8765858aaa6"
+    # default = "subnet-001ec93125a220bff"
+    type = "string"
 }
 
 variable "rds_subnet2" {
-    default = "subnet-06927732034bd16df"
+    # default = "subnet-0cfa5775e82d3e17b"
+    type = "string"
 }
 
 variable "vpc_id" {
@@ -132,6 +148,11 @@ variable "delete_on_termination" {
     type = "string"
 }
 
+variable "ec2_name" {
+    type = "string"
+}
+
+
 variable "device_name" {
     type = "string"
 }
@@ -153,5 +174,13 @@ variable "dynamoDB_writeCapacity" {
 }
 
 variable "dynamoDB_readCapacity" {
+    type = "string"
+}
+
+variable "SGDatabase" {
+    type = "string"
+}
+
+variable "SGApplication" {
     type = "string"
 }

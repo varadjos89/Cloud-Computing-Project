@@ -48,3 +48,15 @@ resource "aws_route_table_association" "main" {
  subnet_id      = "${aws_subnet.main.*.id[count.index]}"
  route_table_id = "${aws_route_table.main.id}"
 }
+
+output "vpc_id" {
+  value = "${aws_vpc.main.id}"
+}
+
+output "rds_subnet1" {
+  value = "${aws_subnet.main.*.id[0]}"
+}
+
+output "rds_subnet2" {
+  value = "${aws_subnet.main.*.id[1]}"
+}

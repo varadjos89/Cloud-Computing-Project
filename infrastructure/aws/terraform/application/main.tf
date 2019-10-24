@@ -1,6 +1,6 @@
 
 resource "aws_security_group" "application" {
-  name              = "application"
+  name              = "${var.SGApplication}"
   description       = "Security Group to host web application"
   vpc_id            = "${var.vpc_id}"
 
@@ -8,7 +8,7 @@ resource "aws_security_group" "application" {
     from_port       = 22 
     to_port         = 22   
     protocol        = "${var.aws_security_group_protocol}"
-    cidr_blocks     = "${var.subnetCidrBlock}"
+    cidr_blocks     = ["0.0.0.0/0"]
     #cidr_blocks values??
   }
 
@@ -16,20 +16,27 @@ resource "aws_security_group" "application" {
     from_port       = 80 
     to_port         = 80   
     protocol        = "${var.aws_security_group_protocol}"
-    cidr_blocks     = "${var.subnetCidrBlock}"
+    cidr_blocks     = ["0.0.0.0/0"]
   }
 
   ingress {
     from_port       = 443 
     to_port         = 443  
     protocol        = "${var.aws_security_group_protocol}"
-    cidr_blocks     = "${var.subnetCidrBlock}"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port       = 8080 
+    to_port         = 8080  
+    protocol        = "${var.aws_security_group_protocol}"
+    cidr_blocks     = ["0.0.0.0/0"]
   }
 
 }
 
 resource "aws_security_group" "database" {
-  name              = "database"
+  name              = "${var.SGDatabase}"
   description       = "Security Group for database"
   vpc_id            = "${var.vpc_id}"
 }
@@ -50,7 +57,7 @@ resource "aws_security_group" "database" {
 # }
 resource "aws_db_subnet_group" "rds-subnet" {
   # count             = "${var.subnetCount}"
-  name              = "rds-subnet-group_new"
+  name              = "${var.rds_subnet_group_name}"
   # subnet_ids        = "${element(data.aws_subnet_ids.private.ids, 1)}"
   subnet_ids        =  ["${var.rds_subnet1}","${var.rds_subnet2}"]
   #rds_subnet_id1 and rds_subnet_id2 not yet defined
@@ -68,8 +75,8 @@ resource "aws_security_group_rule" "database_rule" {
 
 resource "aws_db_instance" "my_rds" {
   name                  = "${var.db_name}"
-  allocated_storage     = 20
-  storage_type          = "gp2"
+  allocated_storage     = "${var.db_allocated_storage}"
+  storage_type          = "${var.db_storage_type}"
   engine                = "${var.db_engine}"
   engine_version        = "${var.db_engine_version}"
   instance_class        = "${var.db_instance}"
@@ -125,7 +132,7 @@ resource "aws_instance" "ec2_instance" {
   }
 
   tags = {
-    Name = "MyEC2"
+    Name = "${var.ec2_name}"
   }
 }
 
