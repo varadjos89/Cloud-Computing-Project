@@ -1,3 +1,47 @@
+# variable "cidrVpc" {
+#     type = "string"
+# }
+
+# variable "vpcName" {
+#     type = "string"
+# }
+
+variable "profile" {
+    description = "Enter the environment (dev/prod):"
+}
+
+variable "region" {
+    type = "string"
+}
+
+# variable "subnetCount" {
+#     type = "string"
+# }
+
+# variable "routeTableName" {
+#     type = "string"
+# }
+
+variable "subnetCidrBlock" {
+    type = "list"
+}
+
+# variable "subnetZones" {
+#     type = "list"
+# }
+
+# variable "internetGatewayName" {
+#     type = "string"
+# }
+
+# variable "subnetName" {
+#     type = "string"
+# }
+
+variable "aws_security_group_protocol" {
+    type = "string"
+    #tcp
+}
 
 variable "db_instance" {
     type = "string"
@@ -32,11 +76,6 @@ variable "db_engine_version" {
     #to be found and hardcoded
 }
 
-variable "aws_security_group_protocol" {
-    type = "string"
-    #tcp
-}
-
 variable "db_multi_az" {
     type = "string"
     #false
@@ -47,22 +86,8 @@ variable "db_publicly_accessible" {
     #true
 }
 
-# variable "rds_subnet1" {
-#     # default = "subnet-03312b8765858aaa6"
-#     type = "string"
-# }
-
-# variable "rds_subnet2" {
-#     # default = "subnet-06927732034bd16df"
-#     type = "string"
-# }
-
 variable "vpc_id" {
     type = "string"
-}
-
-variable "subnetCidrBlock" {
-    type = "list"
 }
 
 variable "db_skip_final_snapshot" {
