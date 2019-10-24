@@ -238,6 +238,7 @@ public class ImageController {
                         if(existRecipe.get().getImage().getImageId().toString().equals(image.getImageId().toString())) {
                             String fileUrl = image.getImageURL();
 
+                            existRecipe.get().setImage(null);
                             imageService.deleteImageById(image.getImageId());
                             this.amazonClient.deleteFileFromS3Bucket(fileUrl);
                             System.out.println("doneeeeeeeeeeeeeee");
