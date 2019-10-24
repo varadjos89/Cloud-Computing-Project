@@ -78,6 +78,7 @@ public class Recipe {
     @JoinColumn(name="nutritionId")
     private NutritionInformation nutritionInformation;
 
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Image image;
 

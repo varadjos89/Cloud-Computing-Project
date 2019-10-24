@@ -25,4 +25,8 @@ public class ImageService {
         }
         return true;
     }
+
+    public void deleteImageById(UUID id) {
+        imageRepository.deleteById(id);
+    }
 }
