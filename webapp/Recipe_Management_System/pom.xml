@@ -12,7 +12,7 @@
     <artifactId>demo</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Recipe_Management_System</name>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
     <description>Cloud Project</description>
 
     <properties>
