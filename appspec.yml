@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 
 files:             
-  - source: ./webapp/Recipe_Management_System/target/demo-0.0.1-SNAPSHOT.war
+  - source: ./demo-0.0.1-SNAPSHOT.war
     destination: /opt/tomcat/webapps
 
 hooks:
