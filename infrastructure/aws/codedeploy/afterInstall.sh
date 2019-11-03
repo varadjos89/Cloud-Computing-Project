@@ -2,11 +2,11 @@
 
 sudo systemctl stop tomcat
 
-sudo rm -rf /opt/tomcat/webapps/demo-0.0.1-SNAPSHOT
+sudo rm -rf /usr/share/tomcat/webapps/demo-0.0.1-SNAPSHOT       
 
-sudo chown tomcat:tomcat /opt/tomcat/webapps/demo-0.0.1-SNAPSHOT.war
+sudo chown tomcat:tomcat /usr/share/tomcat/webapps/demo-0.0.1-SNAPSHOT.war
 
 # cleanup log files
-sudo rm -rf /opt/tomcat/logs/catalina*
-sudo rm -rf /opt/tomcat/logs/*.log
-sudo rm -rf /opt/tomcat/logs/*.txt
+sudo rm -rf /usr/share/tomcat/logs/catalina*
+sudo rm -rf /usr/share/tomcat/logs/*.log
+sudo rm -rf /usr/share/tomcat/logs/*.txt
