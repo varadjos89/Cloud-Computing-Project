@@ -1,5 +1,5 @@
 amazonProperties:
-endpointUrl: 
-accessKey:
-secretKey:
-bucketName:
+  endpointUrl:
+  accessKey:
+  secretKey:
+  bucketName:
