@@ -3,7 +3,7 @@ os: linux
 
 files:             
   - source: ./demo-0.0.1-SNAPSHOT.war
-    destination: /opt/tomcat/webapps   
+    destination: /opt/tomcat/apache-tomcat-9.0.27/webapps   
 
 hooks:
   ApplicationStop:
