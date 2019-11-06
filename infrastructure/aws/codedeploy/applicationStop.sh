@@ -16,7 +16,6 @@ if [[ "" !=  "$PID" ]]; then
   kill -9 $PID
 fi
 
-#kill $(cat /path/to/app/pid.file)
 
 
 
