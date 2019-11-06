@@ -1,7 +1,7 @@
 #!/bin/bash
 
-sudo cd /opt/tomcat/bin/
-sudo sh shutdown.sh
+#sudo cd /opt/tomcat/bin/
+#sudo sh shutdown.sh
 
 # stop tomcat service
 #sudo systemctl stop tomcat.service
@@ -15,6 +15,8 @@ sudo sh shutdown.sh
 #  echo "killing $PID"
 #  kill -9 $PID
 #fi
+
+kill $(cat /path/to/app/pid.file)
 
 
 
