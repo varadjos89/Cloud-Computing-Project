@@ -1,9 +1,9 @@
 #!/bin/bash
 
 
-sudo rm -rf /opt/tomcat/apache-tomcat-9.0.27/webapps/docs  /opt/tomcat/apache-tomcat-9.0.27/webapps/examples /opt/tomcat/apache-tomcat-9.0.27/webapps/host-manager  /opt/tomcat/apache-tomcat-9.0.27/webapps/manager /opt/tomcat/apache-tomcat-9.0.27/webapps/demo-0.0.1-SNAPSHOT
+sudo rm -rf /opt/tomcat/webapps/docs  /opt/tomcat/webapps/examples /opt/tomcat/webapps/host-manager  /opt/tomcat/webapps/manager /opt/tomcat/webapps/demo-0.0.1-SNAPSHOT
 
-sudo chown tomcat:tomcat /opt/tomcat/apache-tomcat-9.0.27/webapps/demo-0.0.1-SNAPSHOT.war
+sudo chown tomcat:tomcat /opt/tomcat/webapps/demo-0.0.1-SNAPSHOT.war
 
 # cleanup log files
 sudo rm -rf /opt/tomcat/apache-tomcat-9.0.27/logs/catalina*
