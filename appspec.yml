@@ -6,10 +6,6 @@ files:
     destination: /opt/tomcat/webapps   
 
 hooks:
-  ApplicationStop:
-   - location: ./applicationStop.sh
-     timeout: 180
-     runas: centos
   AfterInstall:
    - location: ./afterInstall.sh
      timeout: 180
@@ -18,7 +14,7 @@ hooks:
    - location: ./applicationStart.sh
      timeout: 500
      runas: centos
-# ValidateService:
-#  - location: ./validateService.sh
-#    timeout: 180
-#    runas: centos
+  ApplicationStop:
+   - location: ./applicationStop.sh
+     timeout: 180
+     runas: centos
