@@ -402,6 +402,44 @@ resource "aws_iam_role" "role2" {
 EOF
 }
 
+resource "aws_iam_policy" "policy5" {
+  name        = "Cloudwatchagent-server-policy"
+  description = "Permissions required to use AmazonCloudWatchAgent on servers"
+  policy      = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "cloudwatch:PutMetricData",
+                "ec2:DescribeVolumes",
+                "ec2:DescribeTags",
+                "logs:PutLogEvents",
+                "logs:DescribeLogStreams",
+                "logs:DescribeLogGroups",
+                "logs:CreateLogStream",
+                "logs:CreateLogGroup"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ssm:GetParameter"
+            ],
+            "Resource": "arn:aws:ssm:::parameter/AmazonCloudWatch-*"
+        }
+    ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "role1-attach5" {
+  role       = "${aws_iam_role.role1.name}"
+  policy_arn = "${aws_iam_policy.policy5.arn}"
+}
+
 
 resource "aws_codedeploy_app" "app" {
   name = "csye6225-webapp"
