@@ -2,7 +2,7 @@ version: 0.0
 os: linux
 
 files:             
-  - source: ./demo-0.0.1-SNAPSHOT.war
+  - source: ./ROOT.war
     destination: /opt/tomcat/webapps   
 
 hooks:

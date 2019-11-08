@@ -1,8 +1,8 @@
 #!/bin/bash
 
-sudo rm -rf /opt/tomcat/webapps/demo-0.0.1-SNAPSHOT
+sudo rm -rf /opt/tomcat/webapps/ROOT
 
-sudo chown tomcat:tomcat /opt/tomcat/webapps/demo-0.0.1-SNAPSHOT.war
+sudo chown tomcat:tomcat /opt/tomcat/webapps/ROOT.war
 
 # cleanup log files
 sudo rm -rf /opt/tomcat/logs/catalina*
