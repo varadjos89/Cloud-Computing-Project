@@ -9,7 +9,8 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.csye.recipe</groupId>
-    <artifactId>Recipe_Management_System</artifactId>
+    <artifactId>demo</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
     <name>Recipe_Management_System</name>
     <packaging>war</packaging>
     <description>Cloud Project</description>
