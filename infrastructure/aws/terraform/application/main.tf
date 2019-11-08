@@ -545,7 +545,7 @@ resource "aws_instance" "web-1" {
   associate_public_ip_address = true
   source_dest_check           = false
   #subnet_id                   = "${element(tolist(data.aws_subnet_ids.subnet.ids), 0)}"
-  subnet_id                   = "subnet-072db188adea9a4e1"
+  subnet_id                   = "subnet-033bf74e"
   depends_on=["aws_db_instance.my_rds"]
 }
 
