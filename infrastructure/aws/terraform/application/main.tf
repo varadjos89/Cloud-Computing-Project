@@ -60,6 +60,13 @@ resource "aws_security_group" "application" {
     protocol        = "${var.aws_security_group_protocol}"
     cidr_blocks     = ["0.0.0.0/0"]
   }
+
+  egress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_security_group" "database" {
@@ -534,7 +541,7 @@ resource "aws_instance" "web-1" {
     volume_type           = "gp2"
     delete_on_termination = "true"
   }
-  iam_instance_profile="${aws_iam_instance_profile.role1_profile.name}"
+  #iam_instance_profile="${aws_iam_instance_profile.role1_profile.name}"
 
 
   tags = {

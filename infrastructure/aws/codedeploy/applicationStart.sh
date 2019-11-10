@@ -1,7 +1,6 @@
 #!/bin/bash
 
-
-sudo /opt/tomcat/bin/./startup.sh
+java -jar /opt/tomcat/webapps/ROOT.war &
 
 
 
