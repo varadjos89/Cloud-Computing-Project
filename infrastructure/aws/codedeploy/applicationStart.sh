@@ -1,6 +1,6 @@
 #!/bin/bash
 
-java -jar /opt/tomcat/webapps/ROOT.war &
+nohup java -jar /opt/tomcat/webapps/ROOT.war &
 
 
 
