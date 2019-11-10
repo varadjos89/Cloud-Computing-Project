@@ -541,7 +541,7 @@ resource "aws_instance" "web-1" {
     volume_type           = "gp2"
     delete_on_termination = "true"
   }
-  #iam_instance_profile="${aws_iam_instance_profile.role1_profile.name}"
+  iam_instance_profile="${aws_iam_instance_profile.role1_profile.name}"
 
 
   tags = {
