@@ -4,6 +4,7 @@ import com.csye.recipe.pojo.User;
 import com.csye.recipe.repository.UserRepository;
 import com.csye.recipe.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.timgroup.statsd.StatsDClient;
 import org.json.JSONObject;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -33,6 +34,9 @@ public class UserController {
 
     String userHeader;
 
+    @Autowired
+    private StatsDClient metric;
+
     @RequestMapping(value = "/v1/user/self", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public ResponseEntity<Object> userHome(HttpServletRequest req, HttpServletResponse res) throws JsonProcessingException {
@@ -42,6 +46,8 @@ public class UserController {
         String password;
         JSONObject jo;
         String error;
+
+        metric.incrementCounter("userHome");
         try {
             userHeader = req.getHeader("Authorization");
 
@@ -93,6 +99,7 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<Object> createUser(@RequestBody User user, HttpServletRequest req, HttpServletResponse res){
 
+        metric.incrementCounter("createUser");
         JSONObject jo;
         String error;
         //if user already exist
@@ -153,6 +160,7 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<Object> updateUser(@RequestBody User user,HttpServletRequest req,HttpServletResponse res){
 
+        metric.incrementCounter("updateUser");
         JSONObject jo;
         String error;
         //checking if user sent no data to update

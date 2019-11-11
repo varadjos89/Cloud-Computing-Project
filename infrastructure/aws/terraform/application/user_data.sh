@@ -1,13 +1,8 @@
 #!/bin/sh
-sudo touch /opt/tomcat/bin/setenv.sh
-sudo chmod 777 /opt/tomcat/bin/setenv.sh
-sudo echo "JAVA_OPTS=\"\$JAVA_OPTS"\" >> /opt/tomcat/bin/setenv.sh
-sudo echo "JAVA_OPTS=\"\$JAVA_OPTS -Ddomain=${aws_db_endpoint}"\" >> /opt/tomcat/bin/setenv.sh
-sudo echo "JAVA_OPTS=\"\$JAVA_OPTS -Dbucket=${bucketName}\"" >> /opt/tomcat/bin/setenv.sh
-sudo echo "JAVA_OPTS=\"\$JAVA_OPTS -DdbName=${dbname}"\" >> /opt/tomcat/bin/setenv.sh
-sudo echo "JAVA_OPTS=\"\$JAVA_OPTS -Dusername=${dbUsername}"\" >> /opt/tomcat/bin/setenv.sh
-sudo echo "JAVA_OPTS=\"\$JAVA_OPTS -Dpassword=${dbPassword}\"" >> /opt/tomcat/bin/setenv.sh
-#sudo /opt/tomcat/bin/./shutdown.sh
-#sudo /opt/tomcat/bin/./startup.sh
-sudo systemctl stop tomcat
-sudo systemctl start tomcat
+sudo touch /opt/tomcat/webapps/application.yml
+sudo chmod 777 /opt/tomcat/webapps/application.yml
+sudo echo "amazonProperties:" >> /opt/tomcat/webapps/application.yml
+sudo echo "  endpointUrl: ${endpointUrl}" >> /opt/tomcat/webapps/application.yml
+sudo echo "  accessKey: ${accessKey}" >> /opt/tomcat/webapps/application.yml
+sudo echo "  secretKey: ${secretKey}" >> /opt/tomcat/webapps/application.yml
+sudo echo "  bucketName: ${bucketName}" >> /opt/tomcat/webapps/application.yml

@@ -529,11 +529,10 @@ resource "aws_instance" "web-1" {
   #echo host=${var.end_point} >> .env
   user_data         = "${templatefile("${path.module}/user_data.sh",
                                 {
-                                  aws_db_endpoint = "csye6225-dev.cfwlaur60sw1.us-east-1.rds.amazonaws.com",
-                                  bucketName= var.s3_bucket,
-                                  dbname= var.db_name,
-                                  dbUsername= var.db_username,
-                                  dbPassword= var.db_password
+                                  endpointUrl= "https://s3.us-east-2.amazonaws.com",
+                                  accessKey= "AKIAVOJWRCA6WDIGW7VS",
+                                  secretKey= "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",
+                                  bucketName= "dev.recipebyaman.me.xyz"
                                 })}"
   ebs_block_device {
     device_name           = "/dev/sda1"
