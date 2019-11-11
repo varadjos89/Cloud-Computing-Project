@@ -114,7 +114,7 @@ public class ImageController {
                     }
                     //check if recipe already has an image
                     if(imageService.checkIfImageAlreadyExist(existRecipe.get())){
-                        Image img = new Image();      System.out.println(file.getName());
+                        Image img = new Image();      System.out.println(file.isEmpty());
                         //creating new image and storing in S3 bucket
                         String s3Url = this.amazonClient.uploadFile(file);
 
