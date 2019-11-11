@@ -1,14 +1,14 @@
 {
     "agent": {
         "metrics_collection_interval": 10,
-        "logfile": "/var/logs/amazon-cloudwatch-agent.log"
+        "logfile": "/var/log/amazon/amazon-cloudwatch-agent/amazon-cloudwatch-agent.log"
     },
     "logs": {
         "logs_collected": {
             "files": {
                 "collect_list": [
                     {
-                        "file_path": "/opt/tomcat/webapps/csye6225.log",
+                        "file_path": "/opt/tomcat/webapps/csye6225.logs",
                         "log_group_name": "csye6225_fall2019",
                         "log_stream_name": "webapp",
                         "timestamp_format": "%H:%M:%S %y %b %-d"
