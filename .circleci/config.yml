@@ -38,7 +38,8 @@ jobs:
             echo "Copying all .sh files from ../infrastructure/aws/codedeploy directory to the codedeploy_artifact"
             cp ../infrastructure/aws/codedeploy/*.sh .
             echo "Copying all .yml files from ../ directory to the codedeploy_artifact"
-            cp ../*.yml .                   
+            cp ../*.yml .  
+            cp ../*.json .                 
             echo "Copying the jar file from ../webapp/Recipe_Management_System/target/demo-0.0.1-SNAPSHOT.jar to the codedeploy_artifact"
             cp ../webapp/Recipe_Management_System/target/ROOT.war .
             echo "Copying the properties from /webapp/Recipe_Management_System/src/main/resources to the codedeploy_artifact"
