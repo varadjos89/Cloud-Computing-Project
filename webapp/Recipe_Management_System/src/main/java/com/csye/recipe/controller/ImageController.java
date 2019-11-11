@@ -70,7 +70,6 @@ public class ImageController {
         String error;
         String imgURL;
         String imgId;
-
         metric.incrementCounter("uploadImage");
         //check if user uploaded an image file only
         try (InputStream input = file.getInputStream()) {
