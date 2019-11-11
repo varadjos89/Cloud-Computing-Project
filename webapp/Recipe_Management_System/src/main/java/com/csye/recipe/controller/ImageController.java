@@ -89,8 +89,8 @@ public class ImageController {
         try {
             userHeader = req.getHeader("Authorization");
 
-            if (userHeader != null && userHeader.startsWith("Basic")) {       System.out.println("11");
-                userCredentials = userService.getUserCredentials(userHeader);  System.out.println("22");
+            if (userHeader != null && userHeader.startsWith("Basic")) {
+                userCredentials = userService.getUserCredentials(userHeader);
             } else {
                 System.out.println("ONE");
                 error = "{\"error\": \"Please give Basic auth as authorization1!!\"}";
@@ -114,7 +114,7 @@ public class ImageController {
                     }
                     //check if recipe already has an image
                     if(imageService.checkIfImageAlreadyExist(existRecipe.get())){
-                        Image img = new Image();
+                        Image img = new Image();      System.out.println(file.getName());
                         //creating new image and storing in S3 bucket
                         String s3Url = this.amazonClient.uploadFile(file);
 
