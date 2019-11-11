@@ -3,9 +3,7 @@ os: linux
 
 files:             
   - source: ./ROOT.war
-    destination: /opt/tomcat/webapps
-  - source: ./cloudwatch-config.json
-    destination: /opt/tomcat   
+    destination: /opt/tomcat/webapps   
 
 hooks:
   AfterInstall:
