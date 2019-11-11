@@ -89,11 +89,11 @@ public class ImageController {
         try {
             userHeader = req.getHeader("Authorization");
 
-            if (userHeader != null && userHeader.startsWith("Basic")) {
-                userCredentials = userService.getUserCredentials(userHeader);
+            if (userHeader != null && userHeader.startsWith("Basic")) {       System.out.println("11");
+                userCredentials = userService.getUserCredentials(userHeader);  System.out.println("22");
             } else {
                 System.out.println("ONE");
-                error = "{\"error\": \"Please give Basic auth as authorization!!\"}";
+                error = "{\"error\": \"Please give Basic auth as authorization1!!\"}";
                 jo = new JSONObject(error);
                 return new ResponseEntity<Object>(jo.toString(), HttpStatus.UNAUTHORIZED);
             }
@@ -161,7 +161,7 @@ public class ImageController {
         }
         catch (Exception e){
             System.out.println("TWO");
-            error = "{\"error\": \"Please provide basic auth as authorization!!\"}";
+            error = "{\"error\": \"Please provide basic auth as authorization2!!\"}";
             jo = new JSONObject(error);
             return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
         }
