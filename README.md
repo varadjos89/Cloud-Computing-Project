@@ -3,9 +3,8 @@
 ## Team Information
 
 | Name | NEU ID | Email Address |
-| Mit Katwala | 001440383 | katwala.mi@husky.neu.edu |
-| Aman Nigam| 001494916 | nigam.ama@husky.neu.edu|
-| Varad Joshi| 001492002 |joshi.vara@husky.neu.edu |
+
+| Varad Joshi | 001492002 | joshi.vara@husky.neu.edu |
 
 ## Technology Stack
 
@@ -34,5 +33,12 @@ Hibernate
 Check for HTTP status code in postman for each request
 
 ## CI/CD
+
+1) Create IAM roles and plocies using terraform.
+2) Login to circleci and configure it for your github account.
+3) Add environment variables for circleci.
+4) Configure circleci to track certain branch on github.
+5) Create circleci user and attach respective policies to it.
+6) Commit your changes to github and the changes will be deployed automatically on EC2 instance. 
 
 
