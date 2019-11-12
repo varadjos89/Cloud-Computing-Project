@@ -114,3 +114,5 @@ venv.bak/
 terraform.tfstate
 terraform.tfstate.backup
 terraform.tfvars
+.info
+.terraform.tfstate.lock.info

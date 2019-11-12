@@ -159,6 +159,10 @@ variable "delete_on_termination" {
     type = "string"
 }
 
+variable "key_name" {
+    type="string"
+}
+
 variable "device_name" {
     type = "string"
 }
@@ -205,4 +209,28 @@ variable "db_allocated_storage" {
 
 variable "ec2_name" {
     type = "string"
+}
+
+variable "aws_region" {
+  type="string"
+}
+
+variable "aws_accountid" {
+    type="string"
+}
+
+variable "aws_application_name" {
+  type="string"
+}
+
+variable "aws_application_group" {
+  type="string"
+}
+
+variable "aws_circleci_user_name" {
+  type="string"
+}
+
+variable "s3_bucket_name_application" {
+  type="string"
 }

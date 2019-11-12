@@ -12,6 +12,7 @@ import com.csye.recipe.service.AmazonClient;
 import com.csye.recipe.service.ImageService;
 import com.csye.recipe.service.RecipeService;
 import com.csye.recipe.service.UserService;
+import com.timgroup.statsd.StatsDClient;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -51,6 +52,9 @@ public class ImageController {
     @Autowired
     private RecipeRepository recipeRepository;
 
+    @Autowired
+    private StatsDClient metric;
+
     public ImageController(AmazonClient amazonClient) {
         this.amazonClient = amazonClient;
     }
@@ -66,7 +70,7 @@ public class ImageController {
         String error;
         String imgURL;
         String imgId;
-
+        metric.incrementCounter("uploadImage");
         //check if user uploaded an image file only
         try (InputStream input = file.getInputStream()) {
 
@@ -89,7 +93,7 @@ public class ImageController {
                 userCredentials = userService.getUserCredentials(userHeader);
             } else {
                 System.out.println("ONE");
-                error = "{\"error\": \"Please give Basic auth as authorization!!\"}";
+                error = "{\"error\": \"Please give Basic auth as authorization1!!\"}";
                 jo = new JSONObject(error);
                 return new ResponseEntity<Object>(jo.toString(), HttpStatus.UNAUTHORIZED);
             }
@@ -157,7 +161,7 @@ public class ImageController {
         }
         catch (Exception e){
             System.out.println("TWO");
-            error = "{\"error\": \"Please provide basic auth as authorization!!\"}";
+            error = "{\"error\": \"Please provide basic auth as authorization2!!\"}";
             jo = new JSONObject(error);
             return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
         }
@@ -169,6 +173,7 @@ public class ImageController {
         //return this.amazonClient.uploadFile(file);
         JSONObject jo;
         String error;
+        metric.incrementCounter("getImage");
         try {
             Optional<Recipe> existRecipe = recipeService.findById(recipeId);
             if (existRecipe.isPresent()) {
@@ -209,6 +214,8 @@ public class ImageController {
         String userHeader;
         JSONObject jo;
         String error;
+
+        metric.incrementCounter("deleteImage");
         try {
             userHeader = req.getHeader("Authorization");
 
@@ -290,6 +297,7 @@ public class ImageController {
     @ResponseBody
     public ResponseEntity<Object> recentRecipe(HttpServletRequest req, HttpServletResponse res) {
 
+        metric.incrementCounter("recentRecipe");
         List<Recipe> r_list= recipeRepository.findByOrderByCreatedTs();
         Recipe r= r_list.get(r_list.size()-1);
         return new ResponseEntity<Object>(r, HttpStatus.CREATED);

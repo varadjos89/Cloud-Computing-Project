@@ -43,6 +43,7 @@ module "module1" {
    ami = "${var.ami}"
    instance_type = "${var.instance_type}"
    disable_api_termination = "${var.disable_api_termination}"
+   key_name = "${var.key_name}"
    volume_size = "${var.volume_size}"
    volume_type = "${var.volume_type}"
    delete_on_termination = "${var.delete_on_termination}"
@@ -52,7 +53,20 @@ module "module1" {
    dynamoDB_hashKey = "${var.dynamoDB_hashKey}"
    dynamoDB_writeCapacity = "${var.dynamoDB_writeCapacity}"
    dynamoDB_readCapacity = "${var.dynamoDB_readCapacity}"
+
+
+   aws_region = "${var.aws_region}"
+   aws_accountid ="${var.aws_accountid}"
+   aws_application_name = "${var.aws_application_name}"
+   aws_application_group = "${var.aws_application_group}"
+   aws_circleci_user_name = "${var.aws_circleci_user_name}"
+   s3_bucket_name_application = "${var.s3_bucket_name_application}"
+
 }
+
+
+
+
 
 # module "networking" {
 #   source = "../../networking/"

@@ -1,12 +1,22 @@
-# version: 0.0
-# os: linux
+version: 0.0
+os: linux
 
-# files:             
-#   - source: ./webapp/build/libs/ROOT.war
-#     destination: /opt/tomcat/webapps
+files:             
+  - source: ./ROOT.war
+    destination: /opt/tomcat/webapps
+  - source: ./cloudwatch-config.json
+    destination: /opt/tomcat   
 
-# hooks:
-#   AfterInstall:
-#    - location: ./afterInstall.sh
-#      timeout: 180
-#      runas: centos
+hooks:
+  AfterInstall:
+   - location: ./afterInstall.sh
+     timeout: 180
+     runas: centos
+  ApplicationStart:
+   - location: ./applicationStart.sh
+     timeout: 500
+     runas: centos
+  ApplicationStop:
+   - location: ./applicationStop.sh
+     timeout: 180
+     runas: centos

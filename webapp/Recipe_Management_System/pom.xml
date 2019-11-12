@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.csye.recipe</groupId>
-    <artifactId>demo</artifactId>
+    <artifactId>ROOT</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Recipe_Management_System</name>
     <packaging>war</packaging>
@@ -17,6 +17,7 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <tomcat.version>9.0.27</tomcat.version>
     </properties>
 
     <dependencies>
@@ -72,6 +73,12 @@
             <version>1.11.656</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.timgroup</groupId>
+            <artifactId>java-statsd-client</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
 
 
 
@@ -82,6 +89,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <finalName>ROOT</finalName>
+                </configuration>
             </plugin>
         </plugins>
     </build>

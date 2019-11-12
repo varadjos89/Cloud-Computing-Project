@@ -7,6 +7,7 @@ import com.csye.recipe.repository.RecipeRepository;
 import com.csye.recipe.repository.UserRepository;
 import com.csye.recipe.service.RecipeService;
 import com.csye.recipe.service.UserService;
+import com.timgroup.statsd.StatsDClient;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,9 @@ public class RecipeController {
     @Autowired
     private RecipeService recipeService;
 
+    @Autowired
+    private StatsDClient metric;
+
     @RequestMapping(value = "/v1/recipe", method = RequestMethod.POST, produces = "application/json")
     @ResponseBody
     public ResponseEntity<Object> createRecipe(@RequestBody Recipe recipe, HttpServletRequest req, HttpServletResponse res){
@@ -48,6 +52,7 @@ public class RecipeController {
         JSONObject jo;
         String error;
 
+        metric.incrementCounter("createRecipe");
         if(recipe.getCookTimeInMin()%5!=0 || recipe.getPrepTimeInMin()%5!=0){
             error = "{\"error\": \"Cook time and Prep time should be multiple of 5\"}";
             jo = new JSONObject(error);
@@ -173,6 +178,7 @@ public class RecipeController {
 
         JSONObject jo;
         String error;
+        metric.incrementCounter("getRecipe");
         try {
             Optional<Recipe> existRecipe = recipeService.findById(id);
             if (existRecipe.isPresent()) {
@@ -200,6 +206,7 @@ public class RecipeController {
         String userHeader;
         JSONObject jo;
         String error;
+        metric.incrementCounter("updateRecipe");
         try {
             userHeader = req.getHeader("Authorization");
 
@@ -292,6 +299,7 @@ public class RecipeController {
         String userHeader;
         JSONObject jo;
         String error;
+        metric.incrementCounter("deleteRecipe");
         try {
             userHeader = req.getHeader("Authorization");
 
