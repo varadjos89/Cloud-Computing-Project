@@ -161,7 +161,7 @@ public class ImageController {
         }
         catch (Exception e){
             System.out.println("TWO");
-            error = "{\"error\": \"Please provide basic auth as authorization2!!\"}";
+            error = "{\"error\": \"Please provide basic auth as authorization3!!\"}";
             jo = new JSONObject(error);
             return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
         }
