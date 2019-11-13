@@ -1,5 +1,17 @@
 package com.csye.recipe.controller;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.AmazonSNSClient;
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
+import com.amazonaws.services.sns.model.CreateTopicResult;
+import com.amazonaws.services.sns.model.PublishRequest;
+import com.amazonaws.services.sns.model.PublishResult;
 import com.csye.recipe.pojo.Recipe;
 import com.csye.recipe.pojo.Steps;
 import com.csye.recipe.pojo.User;
@@ -17,9 +29,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 public class RecipeController {
@@ -337,6 +347,58 @@ public class RecipeController {
             error = "{\"error\": \"Please provide Basic auth as authorization!!\"}";
             jo = new JSONObject(error);
             return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @RequestMapping(value="/v1/myrecipes", method=RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public void getRecipeLinks(HttpServletRequest req, HttpServletResponse res) {
+
+        String userCredentials[];
+        String userName;
+        String password;
+        String userHeader;
+        JSONObject jo;
+        String error;
+        metric.incrementCounter("getRecipeLinks");
+        try {
+            userHeader = req.getHeader("Authorization");
+
+            userCredentials = userService.getUserCredentials(userHeader);
+            userName = userCredentials[0];
+            password = userCredentials[1];
+            User user = userDao.findByEmailId(userName);
+
+            if (user != null && BCrypt.checkpw(password, user.getPassword())) {
+                List<Recipe> recipe= recipeService.findAll(user);
+                List<String> rlist= new ArrayList<>();
+                for(Recipe r:recipe){
+                      rlist.add("/v1/recipe/" + r.getId().toString());
+                }
+
+
+                AmazonSNS snsClient = AmazonSNSClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
+                CreateTopicResult topicResult = snsClient.createTopic("csye6225_fall2019000");
+                String topicArn = topicResult.getTopicArn();
+                final PublishRequest publishRequest = new PublishRequest(topicArn, user.getEmailId());
+
+                final PublishResult publishResponse = snsClient.publish(publishRequest);
+
+                for(String r:rlist){
+                    System.out.println(r);
+                }
+
+            }
+            else {
+                error = "{\"error\": \"User unauthorized to get this recipe!!\"}";
+                jo = new JSONObject(error);
+                //return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            error = "{\"error\": \"Please provide Basic auth as authorization!!\"}";
+            jo = new JSONObject(error);
+            //return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
         }
     }
 }
