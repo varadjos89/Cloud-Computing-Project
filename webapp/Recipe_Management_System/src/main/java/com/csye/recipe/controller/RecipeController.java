@@ -9,9 +9,7 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
-import com.amazonaws.services.sns.model.CreateTopicResult;
-import com.amazonaws.services.sns.model.PublishRequest;
-import com.amazonaws.services.sns.model.PublishResult;
+import com.amazonaws.services.sns.model.*;
 import com.csye.recipe.pojo.Recipe;
 import com.csye.recipe.pojo.Steps;
 import com.csye.recipe.pojo.User;
@@ -360,6 +358,7 @@ public class RecipeController {
         String userHeader;
         JSONObject jo;
         String error;
+        String send=null;
         metric.incrementCounter("getRecipeLinks");
         try {
             userHeader = req.getHeader("Authorization");
@@ -375,18 +374,17 @@ public class RecipeController {
                 for(Recipe r:recipe){
                       rlist.add("/v1/recipe/" + r.getId().toString());
                 }
-
+                send = String.join(",", rlist);
+                send=send+","+user.getEmailId();
+                System.out.println(send);
 
                 AmazonSNS snsClient = AmazonSNSClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
-                CreateTopicResult topicResult = snsClient.createTopic("csye6225_fall2019000");
+
+                CreateTopicResult topicResult = snsClient.createTopic("csye6225_fall2019");
                 String topicArn = topicResult.getTopicArn();
-                final PublishRequest publishRequest = new PublishRequest(topicArn, user.getEmailId());
+                final PublishRequest publishRequest = new PublishRequest(topicArn, send);
 
                 final PublishResult publishResponse = snsClient.publish(publishRequest);
-
-                for(String r:rlist){
-                    System.out.println(r);
-                }
 
             }
             else {
