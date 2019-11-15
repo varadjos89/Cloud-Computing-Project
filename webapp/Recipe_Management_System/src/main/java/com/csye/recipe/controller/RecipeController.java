@@ -391,6 +391,8 @@ public class RecipeController {
                 System.out.println(user.getEmailId()+"                "+user.getUserId());
                 System.out.println("------------------------------------------------------------------");
 
+                System.out.println(send);
+
                 AmazonSNS snsClient = AmazonSNSClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
 
                 CreateTopicResult topicResult = snsClient.createTopic("csye6225_fall2019");
