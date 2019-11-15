@@ -62,6 +62,11 @@ module "module1" {
    aws_circleci_user_name = "${var.aws_circleci_user_name}"
    s3_bucket_name_application = "${var.s3_bucket_name_application}"
 
+   endpointUrl= "${var.endpointUrl}"
+   accessKey= "${var.accessKey}"
+   secretKey= "${var.secretKey}"
+   bucketName= "${var.bucketName}"
+
 }
 
 

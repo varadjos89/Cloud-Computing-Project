@@ -234,3 +234,19 @@ variable "aws_circleci_user_name" {
 variable "s3_bucket_name_application" {
   type="string"
 }
+
+variable "endpointUrl" {
+  type="string"
+}
+
+variable "accessKey" {
+  type="string"
+}
+
+variable "secretKey" {
+  type="string"
+}
+
+variable "bucketName" {
+  type="string"
+}

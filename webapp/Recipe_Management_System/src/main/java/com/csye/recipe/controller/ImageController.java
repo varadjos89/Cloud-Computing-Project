@@ -293,7 +293,7 @@ public class ImageController {
         }
     }
 
-    @RequestMapping(value = "/v1/recipes", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/v2/recipes", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
     public ResponseEntity<Object> recentRecipe(HttpServletRequest req, HttpServletResponse res) {
 
