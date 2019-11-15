@@ -369,14 +369,27 @@ public class RecipeController {
             User user = userDao.findByEmailId(userName);
 
             if (user != null && BCrypt.checkpw(password, user.getPassword())) {
-                List<Recipe> recipe= recipeService.findAll(user);
-                List<String> rlist= new ArrayList<>();
-                for(Recipe r:recipe){
-                      rlist.add("/v1/recipe/" + r.getId().toString());
+                List<Recipe> recipelist= recipeService.findingAll(user);
+                List<String> list = new ArrayList<>();
+                for(Recipe recipe:recipelist){
+                    System.out.println(recipe.getAuthorId().toString());
+                    System.out.println(user.getUserId().toString());
+                    System.out.println();
+                    if(recipe.getAuthorId().toString().equals(user.getUserId().toString())){
+                        list.add("/v1/recipe/" +recipe.getId().toString());
+                    }
                 }
-                send = String.join(",", rlist);
+
+
+                send = String.join(",", list);
                 send=send+","+user.getEmailId();
-                System.out.println(send);
+
+                System.out.println();
+                for(String r:list){
+                    System.out.println(r);
+                }
+                System.out.println(user.getEmailId()+"                "+user.getUserId());
+                System.out.println("------------------------------------------------------------------");
 
                 AmazonSNS snsClient = AmazonSNSClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
 

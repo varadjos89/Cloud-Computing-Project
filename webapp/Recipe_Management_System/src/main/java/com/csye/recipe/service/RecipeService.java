@@ -25,15 +25,7 @@ public class RecipeService{
         return recipeRepository.findById(id);
     }
 
-    public List<Recipe> findAll(User user) {
-
-        Iterable<Recipe> recipes= recipeRepository.findAll();
-        List<Recipe> list = new ArrayList<>();
-        for(Recipe recipe:recipes){
-            if(recipe.getAuthorId().toString().equals(user.getUserId())){
-                list.add(recipe);
-            }
-        }
-        return (List<Recipe>) recipes;
+    public List<Recipe> findingAll(User user) {
+        return (List<Recipe>) recipeRepository.findAll();
     }
 }
