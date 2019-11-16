@@ -350,7 +350,7 @@ public class RecipeController {
 
     @RequestMapping(value="/v1/myrecipes", method=RequestMethod.POST, produces = "application/json")
     @ResponseBody
-    public void getRecipeLinks(HttpServletRequest req, HttpServletResponse res) {
+    public ResponseEntity<Object> getRecipeLinks(HttpServletRequest req, HttpServletResponse res) {
 
         String userCredentials[];
         String userName;
@@ -372,26 +372,12 @@ public class RecipeController {
                 List<Recipe> recipelist= recipeService.findingAll(user);
                 List<String> list = new ArrayList<>();
                 for(Recipe recipe:recipelist){
-                    System.out.println(recipe.getAuthorId().toString());
-                    System.out.println(user.getUserId().toString());
-                    System.out.println();
                     if(recipe.getAuthorId().toString().equals(user.getUserId().toString())){
                         list.add("/v1/recipe/" +recipe.getId().toString());
                     }
                 }
-
-
                 send = String.join(",", list);
                 send=send+","+user.getEmailId();
-
-                System.out.println();
-                for(String r:list){
-                    System.out.println(r);
-                }
-                System.out.println(user.getEmailId()+"                "+user.getUserId());
-                System.out.println("------------------------------------------------------------------");
-
-                System.out.println(send);
 
                 AmazonSNS snsClient = AmazonSNSClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
 
@@ -405,13 +391,14 @@ public class RecipeController {
             else {
                 error = "{\"error\": \"User unauthorized to get this recipe!!\"}";
                 jo = new JSONObject(error);
-                //return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
+                return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
             }
         }catch(Exception e){
             e.printStackTrace();
             error = "{\"error\": \"Please provide Basic auth as authorization!!\"}";
             jo = new JSONObject(error);
-            //return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
         }
+        return null;
     }
 }
