@@ -2,6 +2,7 @@ package com.csye.recipe.service;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
@@ -34,10 +35,16 @@ public class AmazonClient {
     private void initializeAmazon() {
         //System.out.println(this.accessKey);
         //System.out.println(this.secretKey);
-        BasicAWSCredentials creds = new BasicAWSCredentials(this.accessKey, this.secretKey);
+        /*BasicAWSCredentials creds = new BasicAWSCredentials(this.accessKey, this.secretKey);
         s3client = AmazonS3Client.builder()
                 .withRegion("us-east-1")
                 .withCredentials(new AWSStaticCredentialsProvider(creds))
+                .build();*/
+        InstanceProfileCredentialsProvider provider
+                = new InstanceProfileCredentialsProvider(true);
+        s3client = AmazonS3Client.builder()
+                .withRegion("us-east-1")
+                .withCredentials(provider)
                 .build();
     }
 

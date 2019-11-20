@@ -303,4 +303,11 @@ public class ImageController {
         return new ResponseEntity<Object>(r, HttpStatus.CREATED);
     }
 
+    @RequestMapping(value = "/healthCheck", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public ResponseEntity checkingHealth(HttpServletRequest req, HttpServletResponse res) {
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 }
