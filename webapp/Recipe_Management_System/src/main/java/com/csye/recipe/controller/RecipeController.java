@@ -381,7 +381,7 @@ public class RecipeController {
 
                 AmazonSNS snsClient = AmazonSNSClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
 
-                CreateTopicResult topicResult = snsClient.createTopic("csye6225_fall2019");
+                CreateTopicResult topicResult = snsClient.createTopic("EmailTopic");
                 String topicArn = topicResult.getTopicArn();
                 final PublishRequest publishRequest = new PublishRequest(topicArn, send);
 
