@@ -373,7 +373,7 @@ public class RecipeController {
                 List<String> list = new ArrayList<>();
                 for(Recipe recipe:recipelist){
                     if(recipe.getAuthorId().toString().equals(user.getUserId().toString())){
-                        list.add("/v1/recipe/" +recipe.getId().toString());
+                        list.add(recipe.getId().toString());
                     }
                 }
                 send = String.join(",", list);
