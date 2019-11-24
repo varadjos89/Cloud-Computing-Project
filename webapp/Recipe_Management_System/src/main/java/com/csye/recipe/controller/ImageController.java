@@ -160,6 +160,7 @@ public class ImageController {
             }
         }
         catch (Exception e){
+            e.printStackTrace();
             System.out.println("TWO");
             error = "{\"error\": \"Please provide basic auth as authorization3!!\"}";
             jo = new JSONObject(error);
