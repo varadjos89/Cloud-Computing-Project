@@ -66,7 +66,7 @@ public class AmazonClient {
     }
 
     private void uploadFileTos3bucket(String fileName, File file, InputStream inputStream, String s) {
-        s3client.putObject(new PutObjectRequest(bucketName, "fileName", inputStream,new ObjectMetadata()));
+        s3client.putObject(new PutObjectRequest(bucketName, "abc", inputStream,new ObjectMetadata()));
                 //.withCannedAcl(CannedAccessControlList.PublicRead));
     }
 
@@ -75,7 +75,7 @@ public class AmazonClient {
         String fileUrl = "";
         try {
             File file = convertMultiPartToFile(multipartFile);
-            String fileName = generateFileName(multipartFile);
+            String fileName = generateFileName(multipartFile)+"abc";
             fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
             uploadFileTos3bucket(fileName, file,multipartFile.getInputStream(),"");
             file.delete();
