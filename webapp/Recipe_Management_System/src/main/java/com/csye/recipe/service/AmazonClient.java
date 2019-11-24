@@ -14,6 +14,7 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Date;
 
 @Service
@@ -64,8 +65,8 @@ public class AmazonClient {
         return new Date().getTime() + "-" + multiPart.getOriginalFilename().replace(" ", "_");
     }
 
-    private void uploadFileTos3bucket(String fileName, File file) {
-        s3client.putObject(new PutObjectRequest(bucketName, fileName, file));
+    private void uploadFileTos3bucket(String fileName, File file, InputStream inputStream, String s) {
+        s3client.putObject(new PutObjectRequest(bucketName, fileName, inputStream,new ObjectMetadata()));
                 //.withCannedAcl(CannedAccessControlList.PublicRead));
     }
 
@@ -76,7 +77,7 @@ public class AmazonClient {
             File file = convertMultiPartToFile(multipartFile);
             String fileName = generateFileName(multipartFile);
             fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
-            uploadFileTos3bucket(fileName, file);
+            uploadFileTos3bucket(fileName, file,multipartFile.getInputStream(),"");
             file.delete();
         } catch (Exception e) {
             e.printStackTrace();
