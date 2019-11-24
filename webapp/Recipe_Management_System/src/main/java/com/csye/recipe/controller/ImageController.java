@@ -160,8 +160,9 @@ public class ImageController {
             }
         }
         catch (Exception e){
+            e.printStackTrace();
             System.out.println("TWO");
-            error = "{\"error\": \"Please provide basic auth as authorization2!!\"}";
+            error = "{\"error\": \"Please provide basic auth as authorization3!!\"}";
             jo = new JSONObject(error);
             return new ResponseEntity<Object>(jo.toString(),HttpStatus.UNAUTHORIZED);
         }
@@ -301,6 +302,13 @@ public class ImageController {
         List<Recipe> r_list= recipeRepository.findByOrderByCreatedTs();
         Recipe r= r_list.get(r_list.size()-1);
         return new ResponseEntity<Object>(r, HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/healthCheck", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public ResponseEntity checkingHealth(HttpServletRequest req, HttpServletResponse res) {
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }

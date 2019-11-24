@@ -234,3 +234,16 @@ variable "aws_circleci_user_name" {
 variable "s3_bucket_name_application" {
   type="string"
 }
+
+variable "s3_bucket_name_lambda" {
+  type="string"
+}
+
+variable "domain_name" {
+  type="string"
+}
+
+variable "ttl" {
+  type="string"
+}
+
