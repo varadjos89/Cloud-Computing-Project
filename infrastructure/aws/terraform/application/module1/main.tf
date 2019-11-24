@@ -62,7 +62,12 @@ module "module1" {
    aws_circleci_user_name = "${var.aws_circleci_user_name}"
    s3_bucket_name_application = "${var.s3_bucket_name_application}"
 
+
+   s3_bucket_name_lambda= "${var.s3_bucket_name_lambda}"
+   domain_name = "${var.domain_name}"
+   ttl = "${var.ttl}"
 }
+
 
 
 
