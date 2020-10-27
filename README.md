@@ -42,10 +42,11 @@ Hibernate <br/>
 ## Steps for CI/CD Pipeline
 
 1) Refer Readme file for fa19-team-025-ami to configure CircleCI with Github.
-2) CircleCI file(config.yml) within the repository has been configured with all the commands require to build, test, deploy the artifact to S3 bucket and make
+2) Create a user named CircleCI with programatic access.
+3) CircleCI file(config.yml) within the repository has been configured with all the commands require to build, test, deploy the artifact to S3 bucket and make
    CodeDeploy API call.
-3) CodeDeploy will pick the latest build file from S3 bucket and deploy it onto load balanced group of EC2 instances.
-4) I used Postman here to test all the APIs.
+4) CodeDeploy will pick the latest build file from S3 bucket and deploy it onto load balanced group of EC2 instances.
+5) I used Postman here to test all the APIs.
 
 ## ScreenShots
 ![Screenshot from 2020-10-26 23-22-07](https://user-images.githubusercontent.com/48415852/97254140-22dfb280-17e4-11eb-997b-36841222a22e.png)
