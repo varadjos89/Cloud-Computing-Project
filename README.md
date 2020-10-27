@@ -39,14 +39,25 @@ Hibernate <br/>
 ![Screenshot from 2020-10-26 21-12-06](https://user-images.githubusercontent.com/48415852/97244990-6a5c4380-17d0-11eb-918d-96bdc88972a8.png)
 ![Screenshot from 2020-10-26 21-12-49](https://user-images.githubusercontent.com/48415852/97244995-6cbe9d80-17d0-11eb-9758-d38180d17fb7.png)
 
+## Steps for CI/CD Pipeline
+
+1) Refer Readme file for fa19-team-025-ami to configure CircleCI with Github.
+2) CircleCI file(config.yml) within the repository has been configured with all the commands require to build, test, deploy the artifact to S3 bucket and make
+   CodeDeploy API call.
+3) CodeDeploy will pick the latest build file from S3 bucket and deploy it onto load balanced group of EC2 instances.
+4) I used Postman here to test all the APIs.
+
+## ScreenShots
+![Screenshot from 2020-10-26 23-22-07](https://user-images.githubusercontent.com/48415852/97254140-22dfb280-17e4-11eb-997b-36841222a22e.png)
+![Screenshot from 2020-10-26 23-22-16](https://user-images.githubusercontent.com/48415852/97254145-24a97600-17e4-11eb-9644-10cca0f5281a.png)
+![Screenshot from 2020-10-26 23-22-18](https://user-images.githubusercontent.com/48415852/97254147-26733980-17e4-11eb-9806-b74440e82cb3.png)
+![Screenshot from 2020-10-26 23-22-29](https://user-images.githubusercontent.com/48415852/97254154-27a46680-17e4-11eb-9d4b-43e8ead9cf1f.png)
+![Screenshot from 2020-10-26 23-22-45](https://user-images.githubusercontent.com/48415852/97254162-2b37ed80-17e4-11eb-8ed7-ed52dfc6c08e.png)
+![Screenshot from 2020-10-26 23-23-04](https://user-images.githubusercontent.com/48415852/97254166-2d9a4780-17e4-11eb-88f6-c479b597aaac.png)
+![Screenshot from 2020-10-26 23-23-11](https://user-images.githubusercontent.com/48415852/97254176-30953800-17e4-11eb-900f-3415d4c2cd5b.png)
+![Screenshot from 2020-10-26 23-32-47](https://user-images.githubusercontent.com/48415852/97254184-32f79200-17e4-11eb-9bd4-c346eebf5765.png)
+![Screenshot from 2020-10-26 23-32-50](https://user-images.githubusercontent.com/48415852/97254195-368b1900-17e4-11eb-9331-21a8fc1a026c.png)
 
 
-## Deploy Instructions
-
-1) Install Postman and create a collection
-2) Create three requests: Get, Post, Put as specified by assignment guidelines
-3) For Get enter url: /v1/user/self and then in authorization tab select basic auth and enter user credentials to log in
-4) For Post enter url: /v1/user and then enter user information in JSON format in body tab
-5) For Update enter url: /v1/user/self and then enter user information in JSON format in body tab and select basic auth in authorization tab after entering user credentials 
 
 
