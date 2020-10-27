@@ -27,7 +27,6 @@ Hibernate <br/>
 9) Run "terraform init" to initialize working directory, "terraform plan" to create execution plan and lastly "terraform apply" to provision resources into AWS cloud.
 
 ## ScreenShots
-![Screenshot from 2020-10-26 19-44-06](https://user-images.githubusercontent.com/48415852/97244941-4f89cf00-17d0-11eb-9638-a69a59e54f44.png)
 ![Screenshot from 2020-10-26 21-06-58](https://user-images.githubusercontent.com/48415852/97244944-51539280-17d0-11eb-9842-7cbd5911e81f.png)
 ![Screenshot from 2020-10-26 21-07-30](https://user-images.githubusercontent.com/48415852/97244948-531d5600-17d0-11eb-9f14-924e17dd889c.png)
 ![Screenshot from 2020-10-26 21-07-41](https://user-images.githubusercontent.com/48415852/97244951-557fb000-17d0-11eb-88de-4fde29ce74b6.png)
